@@ -1,0 +1,89 @@
+@font-face {
+    font-family: 'MiFuenteTitulos';
+    src: url('font/SportageDemo-DO0A1.otf') format('opentype');
+    font-weight: normal;
+    font-style: normal;
+}
+@font-face {
+    font-family: 'MiFuenteTexto';
+    src: url('font/DeliriumNcv-Vm5e.ttf') format('truetype');
+    font-weight: normal;
+    font-style: normal;
+}
+
+body {
+    background-color: #f8f9fa;
+    font-family: 'Comic Sans MS', 'Chalkboard SE', 'Marker Felt', sans-serif;
+}
+
+.sketch-border {
+    border: 2px solid #333;
+    border-radius: 8px;
+    box-shadow: 2px 2px 0px 0px rgba(0,0,0,0.2);
+    padding: 10px;
+    background-color: #fff;
+}
+
+
+.btn, .form-select {
+    border: 2px solid #333;
+    border-radius: 8px;
+    box-shadow: 2px 2px 0px 0px rgba(0,0,0,0.2);
+    font-weight: bold;
+    transition: all 0.2s ease-in-out;
+}
+
+.btn:hover, .form-select:focus {
+    transform: translateY(-2px);
+    box-shadow: 4px 4px 0px 0px rgba(0,0,0,0.2);
+}
+
+.btn-delete {
+    background-color: #dc3545;
+    color: white;
+}
+.btn-print {
+    background-color: #ca9eff;
+    color: #333;
+}
+.btn-confirm {
+    background-color: #28a745;
+    color: white;
+}
+
+.table-responsive.sketch-border {
+    padding: 0;
+    overflow: hidden; 
+}
+
+.table {
+    margin-bottom: 0;
+}
+
+.table thead th {
+    background-color: #e9d8ff;
+    border-bottom: 2px solid #333 !important;
+}
+
+.table-striped tbody tr:nth-of-type(odd) {
+    background-color: #f3e9ff;
+}
+
+
+.anuncios-placeholder {
+    background-color: #808080;
+    height: 100%;
+    min-height: 400px;
+    border-radius: 8px;
+    border: 2px solid #333;
+}
+
+.modal-content.sketch-border {
+    padding: 15px;
+}
+.modal-footer {
+    border-top: none;
+}
+.modal-header{
+    border-bottom: 2px solid #333;
+}
