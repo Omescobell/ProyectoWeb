@@ -2,6 +2,7 @@
 <html>
     <head>
         <meta charset="UTF-8">
+        <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC" crossorigin="anonymous">
         <link rel="stylesheet" href="fonts.css">
         <style>
             html, body {
@@ -35,6 +36,7 @@
             .inputs{
             width:50%;
             border-radius: 16px;
+            background-color: rgba(255, 255, 255, .7);
             flex: auto;
             font-family: 'MiFuenteTexto',sans-serif;
             font-size: x-large;
@@ -53,7 +55,7 @@
             <br>
             <input type="usuario" class="inputs" placeholder="      Usuario" name="usuario" required>
             <input type="password"class="inputs" placeholder="      Contraseña" name="contraseña" required>
-            <input type="button" class="inputs" value="Iniciar Sesion" >
+            <button type="button " class="inputs btn btn-success">Iniciar Sesion</button>
         </form>
     </body>
 </html>
