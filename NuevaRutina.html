@@ -53,81 +53,123 @@
         </div>
         </div>
     </nav>
-    <main>
-        <div class="container my-5">
-            <div class="row justify-content-center align-items-start g-4">
+    <main class="container my-5">
+        <div class="row g-5">
 
-                <div class="col-lg-4 col-md-6">
-                    <!-- Selector de musculos -->
-                    <div class="sketch-border p-2 mb-3">
-                    <select class="form-select sketch-border" id="musculo-selector" name="musculo">
-                        <!-- Esto debe de se generado por js para ver que musculos tenemos en la base de datos -->
-                        <option selected>Selecciona un músculo</option>
+            <!-- Columna Izquierda: Selección de Ejercicios -->
+            <div class="col-lg-4">
+                <!-- Selector de Músculo -->
+                <div class="mb-3">
+                    <label for="select-musculo-filtro" class="form-label sketch-label">Músculo</label>
+                    <select class="form-select sketch-border" id="select-musculo-filtro">
+                        <option selected>Todos los músculos</option>
                         <option value="pecho">Pecho</option>
                         <option value="espalda">Espalda</option>
                         <option value="pierna">Pierna</option>
                         <option value="hombro">Hombro</option>
-                        <option value="biceps">Bíceps</option>
-                        <option value="triceps">Tríceps</option>
                     </select>
                 </div>
-                    
-                    <!-- Lista de Ejercicios -->
-                    <div class="lista-seleccion-unica sketch-border" id="lista-ejercicios-seleccion">
-                        <div class="opcion">
-                            <input type="radio" id="ejercicio-press" name="ejercicio" value="press" checked>
-                            <label for="ejercicio-press">Press</label>
-                        </div>
-                        <div class="opcion">
-                            <input type="radio" id="ejercicio-jalon" name="ejercicio" value="jalon">
-                            <label for="ejercicio-jalon">Jalon</label>
-                        </div>
-                        <div class="opcion">
-                            <input type="radio" id="ejercicio-empuje" name="ejercicio" value="empuje">
-                            <label for="ejercicio-empuje">Empuje</label>
-                        </div>
-                        <div class="opcion">
-                            <input type="radio" id="ejercicio-elevacion" name="ejercicio" value="elevacion">
-                            <label for="ejercicio-elevacion">Elevacion</label>
-                        </div>
+
+                <!-- Ejercicios Disponibles -->
+                <div class="lista-ejercicios-seleccion sketch-border" id="contenedor-ejercicios-disponibles">
+                    <!-- Ejercicios cargados por JS, estos son solo de ejemplo, los cargan aqui -->
+                    <div class="opcion-ejercicio">
+                        <input type="checkbox" id="ej-press" name="ejercicio-disponible" value="press">
+                        <label for="ej-press">Press</label>
+                    </div>
+                    <div class="opcion-ejercicio">
+                        <input type="checkbox" id="ej-jalon" name="ejercicio-disponible" value="jalon">
+                        <label for="ej-jalon">Jalon</label>
+                    </div>
+                    <div class="opcion-ejercicio">
+                        <input type="checkbox" id="ej-empuje" name="ejercicio-disponible" value="empuje">
+                        <label for="ej-empuje">Empuje</label>
+                    </div>
+                    <div class="opcion-ejercicio">
+                        <input type="checkbox" id="ej-elevacion" name="ejercicio-disponible" value="elevacion">
+                        <label for="ej-elevacion">Elevacion</label>
+                    </div>
+                    <div class="opcion-ejercicio">
+                        <input type="checkbox" id="ej-estiramiento" name="ejercicio-disponible" value="estiramiento">
+                        <label for="ej-estiramiento">Estiramiento</label>
+                    </div>
+                    <div class="opcion-ejercicio">
+                        <input type="checkbox" id="ej-crunch" name="ejercicio-disponible" value="crunch">
+                        <label for="ej-crunch">Crunch</label>
+                    </div>
+                    <div class="opcion-ejercicio">
+                        <input type="checkbox" id="ej-sentadilla" name="ejercicio-disponible" value="sentadilla">
+                        <label for="ej-sentadilla">Sentadilla</label>
+                    </div>
+                    <div class="opcion-ejercicio">
+                        <input type="checkbox" id="ej-pelvis" name="ejercicio-disponible" value="pelvis">
+                        <label for="ej-pelvis">Levantamiento de Pelvis</label>
                     </div>
                 </div>
+            </div>
 
-                <div class="col-lg-5 col-md-6 text-center">
-                    <!-- Detalles del Ejercicio -->
-                    <div class="card sketch-border detalle-ejercicio-card mb-4">
-                        <div class="card-body p-4">
-                            <!-- Cambiar esto generado por js, en al cargar la informacion le agregan lo de nombre ejercicio y asi,
-                            para no tener que poner otra etiqueta p y h, tendria que quedar nEjercicio = "Nombre ejercicio:" + basededatos.nombrejercio
-                            asi para todas-->
-                            <h2 class="card-title" id="nombre-ejercicio">Nombre del Ejercicio</h2>
-                            <p id="descripcion-ejercicio">Descripcion del ejercicio</p>
-                            <p id="musculo-principal">Musculo Principal</p>
-                            <p id="como-realizarlo">Como realizarlo</p>
-                        </div>
-                    </div>
-                    <div class="dropup">
-                        <button class="btn btn-agregar-rutina sketch-border dropdown-toggle" type="button" id="btn-agregar-rutina" data-bs-toggle="dropdown" aria-expanded="false">
-                            Agregar a rutina ^
-                        </button>
-                        <ul class="dropdown-menu" id="lista-rutinas-para-agregar">
-                            <!-- Cambiar esto para generarlos por js -->
-                            <li><a class="dropdown-item" href="#">Rutina - Lunes (Pecho/Tríceps)</a></li>
-                            <li><a class="dropdown-item" href="#">Rutina - Martes (Espalda/Bíceps)</a></li>
-                            <li><a class="dropdown-item" href="#">Rutina - Miércoles (Pierna)</a></li>
-                            <li><hr class="dropdown-divider"></li>
-                            <li><a class="dropdown-item" href="#"><b>+ Crear nueva rutina</b></a></li>
-                        </ul>
-                    </div>
-                </div> 
-
-                <!-- Anuncios -->
-                <div class="col-lg-3 d-none d-lg-block">
-                    <div class="columna-derecha-placeholder">
-                        <!-- Aquí es donde van a estar los anuncios -->
-                    </div>
+            <!-- Creación de la Rutina -->
+            <div class="col-lg-8">
+                <!-- Nombre de la Rutina -->
+                <div class="mb-4">
+                    <label for="input-nombre-rutina" class="form-label sketch-label-large">Nombre de la rutina</label>
+                    <input type="text" class="form-control sketch-input" id="input-nombre-rutina" placeholder="Ej: Rutina de Lunes - Pecho y Tríceps">
                 </div>
 
+                <!-- Rutina -->
+                <div class="table-responsive sketch-border mb-4">
+                    <table class="table table-striped mb-0">
+                        <thead>
+                            <tr>
+                                <th>Ejercicio</th>
+                                <th>Repeticiones</th>
+                                <th>Grupo Muscular</th>
+                                <th>Series</th>
+                            </tr>
+                        </thead>
+                        <tbody id="tabla-nueva-rutina-body">
+                            <!-- Aqui se agregaran los datos con js, estos son solo de ejemplo-->
+                            <tr>
+                                <td>Estiramiento</td>
+                                <td>40</td>
+                                <td>Pecho</td>
+                                <td>4</td>
+                            </tr>
+                            <tr>
+                                <td>Levantamiento de pelvis</td>
+                                <td>20</td>
+                                <td>Glúteo</td>
+                                <td>3</td>
+                            </tr>
+                            <tr>
+                                <td>Sentadilla</td>
+                                <td>10</td>
+                                <td>Pierna</td>
+                                <td>2</td>
+                            </tr>
+                            <tr>
+                                <td>Press</td>
+                                <td>8</td>
+                                <td>Pecho</td>
+                                <td>Super serie</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+
+                <!-- Crear nueva Rutina e Imprimir botones -->
+                <div class="d-flex justify-content-start gap-3">
+                    <button class="btn sketch-border btn-crear" id="btn-crear-rutina">
+                        + Crear Rutina
+                    </button>
+                    <button class="btn sketch-border btn-imprimir" id="btn-imprimir-rutina">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-printer-fill" viewBox="0 0 16 16">
+                            <path d="M5 1a2 2 0 0 0-2 2v1h10V3a2 2 0 0 0-2-2zm6 8H5a1 1 0 0 0-1 1v3a1 1 0 0 0 1 1h6a1 1 0 0 0 1-1v-3a1 1 0 0 0-1-1"/>
+                            <path d="M0 7a2 2 0 0 1 2-2h12a2 2 0 0 1 2 2v3a2 2 0 0 1-2 2h-1v-2a2 2 0 0 0-2-2H5a2 2 0 0 0-2 2v2H2a2 2 0 0 1-2-2zm2.5 1a.5.5 0 1 0 0-1 .5.5 0 0 0 0 1"/>
+                        </svg>
+                        Imprimir
+                    </button>
+                </div>
             </div>
         </div>
     </main>

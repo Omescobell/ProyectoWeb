@@ -1,0 +1,117 @@
+body {
+    background-color: #fff;
+    font-family: 'Comic Sans MS', 'Chalkboard SE', 'Marker Felt', sans-serif;
+}
+
+
+.sketch-border {
+    border: 2px solid #333;
+    border-radius: 12px;
+    background-color: #f3e9ff;
+    box-shadow: 3px 3px 0px 0px rgba(0,0,0,0.15);
+}
+
+/* --- Columna Izquierda --- */
+
+.sketch-label {
+    font-size: 1.5rem;
+    font-weight: bold;
+    border: 2px solid #333;
+    border-radius: 8px;
+    padding: 5px 15px;
+    background-color: #fff;
+    box-shadow: 2px 2px 0px 0px rgba(0,0,0,0.15);
+}
+
+.form-select.sketch-border {
+    border-width: 2px;
+    padding: 10px;
+    font-size: 1rem;
+    font-weight: bold;
+    background-color: #fff;
+}
+
+.lista-ejercicios-seleccion {
+    padding: 15px;
+    height: 400px;
+    overflow-y: auto; 
+}
+
+.opcion-ejercicio {
+    margin-bottom: 12px;
+    font-size: 1.1rem;
+}
+
+.opcion-ejercicio input[type="checkbox"] {
+    margin-right: 10px;
+    transform: scale(1.2);
+}
+
+/* --- Columna Derecha --- */
+
+.sketch-label-large {
+    font-size: 1.3rem;
+    color: #6c757d;
+}
+
+.sketch-input {
+    border: none;
+    border-bottom: 2px solid #333;
+    border-radius: 0;
+    font-size: 1.5rem;
+    font-weight: bold;
+    padding: 10px 0;
+}
+.sketch-input:focus {
+    box-shadow: none;
+    border-color: #8a2be2;
+}
+
+.table-responsive.sketch-border {
+    padding: 0;
+    overflow: hidden;
+}
+
+.table {
+    margin-bottom: 0;
+}
+
+.table thead th {
+    background-color: #e9d8ff;
+    border-bottom: 2px solid #333 !important;
+    font-size: 0.9rem;
+    text-transform: uppercase;
+}
+
+.table tbody tr {
+    background-color: #f3e9ff;
+}
+
+.table-striped>tbody>tr:nth-of-type(odd)>* {
+    background-color: #e9d8ff;
+}
+
+.table td, .table th {
+    padding: 12px;
+    vertical-align: middle;
+}
+
+/* Botones */
+.btn {
+    font-weight: bold;
+    padding: 10px 20px;
+    border-width: 2px;
+    box-shadow: 2px 2px 0px 0px rgba(0,0,0,0.2);
+    transition: all 0.1s ease-in-out;
+}
+.btn:hover {
+    transform: translateY(-2px);
+    box-shadow: 4px 4px 0px 0px rgba(0,0,0,0.2);
+}
+
+.btn-crear {
+    background-color: #d1bcf3;
+}
+.btn-imprimir {
+    background-color: #d1bcf3;
+}
