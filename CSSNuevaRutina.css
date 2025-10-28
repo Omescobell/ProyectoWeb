@@ -1,0 +1,108 @@
+@font-face {
+    font-family: 'MiFuenteTitulos';
+    src: url('font/SportageDemo-DO0A1.otf') format('opentype');
+    font-weight: normal;
+    font-style: normal;
+}
+@font-face {
+    font-family: 'MiFuenteTexto';
+    src: url('font/DeliriumNcv-Vm5e.ttf') format('truetype');
+    font-weight: normal;
+    font-style: normal;
+}
+
+body {
+    background-color: #FFFFFF;
+    font-family: 'MiFuenteTexto, 'Chalkduster', 'cursive', sans-serif;
+}
+
+
+.sketch-border {
+    border: 2px solid black !important;
+    border-radius: 12px !important;
+}
+
+    .selector-musculo-wrapper {
+    border: 2px solid black;
+    border-radius: 5px;
+    padding: 5px 10px;
+    display: inline-block;
+}
+#selector-musculo {
+    border: none;
+    background-color: transparent;
+    box-shadow: none; 
+    padding-left: 0;
+}
+#selector-musculo:focus {
+    outline: none;
+}
+        
+/* Contenedor de la lista de ejercicios */
+.lista-seleccion-unica {
+    padding: 1rem;
+    margin-bottom: 1rem;
+    background-color: #c3b1e1;
+    height: 400px;
+    overflow-y: auto;
+}
+
+.lista-seleccion-unica .opcion input[type="radio"] {
+    display: none;
+}
+
+.lista-seleccion-unica .opcion label {
+    display: block;
+    padding: 0.6rem 1rem 0.6rem 2.5rem;
+    position: relative;
+    cursor: pointer;
+    border-radius: 8px;
+}
+
+.lista-seleccion-unica .opcion label::before {
+    content: '';
+    position: absolute;
+    left: 1rem;
+    top: 50%;
+    transform: translateY(-50%);
+    width: 14px;
+    height: 14px;
+    border: 2px solid black;
+    border-radius: 50%;
+    background-color: white;
+}
+
+.lista-seleccion-unica .opcion label::after {
+    content: '';
+    position: absolute;
+    left: 1.3rem; 
+    top: 50%;
+    transform: translateY(-50%);
+    width: 8px;
+    height: 8px;
+    background-color: black;
+    border-radius: 50%;
+    opacity: 0; 
+    transition: opacity 0.2s;
+}
+
+
+.lista-seleccion-unica .opcion input[type="radio"]:checked + label::after {
+    opacity: 1;
+}
+
+.detalle-ejercicio-card {
+    background-color: #f2e9ff; 
+}
+
+/* * Gris para representar el color del mockup*/
+.columna-derecha-placeholder {
+    background-color: #808080;
+    height: 500px;
+}
+
+.btn-agregar-rutina {
+    background-color: #c3b1e1;
+    color: black;
+    border: 2px solid black;
+        }
