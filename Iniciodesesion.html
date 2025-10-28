@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset="UTF-8">
+        <link rel="stylesheet" href="fonts.css">
+        <style>
+            html, body {
+                height: 100%;
+                margin: 0;
+                padding: 0;
+            }
+
+            body{
+            height:100%;
+            width: 100%;
+            background-image: url('/Imagenes/Inicio sesion.jpg');
+            background-size: cover;
+            background-position: center;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+
+            }
+            .login{
+            width: 400px;
+            padding: 30px;
+            background-color: rgba(142, 124, 195, 0.7); 
+            border-radius: 10px;
+            box-shadow: 0 0 10px rgba(0,0,0,0.3);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 15px;
+            }
+            .inputs{
+            width:50%;
+            border-radius: 16px;
+            flex: auto;
+            font-family: 'MiFuenteTexto',sans-serif;
+            font-size: x-large;
+            }
+            h2{
+                font-family: 'MiFuenteTitulos',sans-serif ;
+                font-size: xx-large;
+            }
+            
+        </style>
+    </head>
+    <body>
+        <form class="login">
+            <h2>Inicio de Sesion</h2>
+            <br>
+            <br>
+            <input type="usuario" class="inputs" placeholder="      Usuario" name="usuario" required>
+            <input type="password"class="inputs" placeholder="      Contraseña" name="contraseña" required>
+            <input type="button" class="inputs" value="Iniciar Sesion" >
+        </form>
+    </body>
+</html>
