@@ -96,15 +96,28 @@
                     <!-- Detalles del Ejercicio -->
                     <div class="card sketch-border detalle-ejercicio-card mb-4">
                         <div class="card-body p-4">
+                            <!-- Cambiar esto generado por js, en al cargar la informacion le agregan lo de nombre ejercicio y asi,
+                            para no tener que poner otra etiqueta p y h, tendria que quedar nEjercicio = "Nombre ejercicio:" + basededatos.nombrejercio
+                            asi para todas-->
                             <h2 class="card-title" id="nombre-ejercicio">Nombre del Ejercicio</h2>
                             <p id="descripcion-ejercicio">Descripcion del ejercicio</p>
                             <p id="musculo-principal">Musculo Principal</p>
                             <p id="como-realizarlo">Como realizarlo</p>
                         </div>
                     </div>
-                    <button class="btn btn-agregar-rutina sketch-border" id="btn-agregar-rutina">
-                        Agregar a rutina ^
-                    </button>
+                    <div class="dropup">
+                        <button class="btn btn-agregar-rutina sketch-border dropdown-toggle" type="button" id="btn-agregar-rutina" data-bs-toggle="dropdown" aria-expanded="false">
+                            Agregar a rutina ^
+                        </button>
+                        <ul class="dropdown-menu" id="lista-rutinas-para-agregar">
+                            <!-- Cambiar esto para generarlos por js -->
+                            <li><a class="dropdown-item" href="#">Rutina - Lunes (Pecho/Tríceps)</a></li>
+                            <li><a class="dropdown-item" href="#">Rutina - Martes (Espalda/Bíceps)</a></li>
+                            <li><a class="dropdown-item" href="#">Rutina - Miércoles (Pierna)</a></li>
+                            <li><hr class="dropdown-divider"></li>
+                            <li><a class="dropdown-item" href="#"><b>+ Crear nueva rutina</b></a></li>
+                        </ul>
+                    </div>
                 </div> 
 
                 <!-- Anuncios -->
