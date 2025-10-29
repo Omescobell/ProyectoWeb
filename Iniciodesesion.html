@@ -1,61 +1,89 @@
 <!DOCTYPE html>
-<html>
-    <head>
-        <meta charset="UTF-8">
-        <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC" crossorigin="anonymous">
-        <link rel="stylesheet" href="static/css/fonts.css">
-        <style>
-            html, body {
-                height: 100%;
-                margin: 0;
-                padding: 0;
-            }
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet">
+  <style>
+    html, body {
+      height: 100%;
+      margin: 0;
+      padding: 0;
+    }
 
-            body{
-            height:100%;
-            width: 100%;
-            background-image: url('/Imagenes/Inicio sesion.jpg');
-            background-size: cover;
-            background-position: center;
-            display: flex;
-            justify-content: center;
-            align-items: center;
+    body {
+      height:100%;
+      width:100%;
+      background-image: url('/Imagenes/Inicio sesion.jpg');
+      background-size: cover;
+      background-position: center;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+    }
 
-            }
-            .login{
-            width: 400px;
-            padding: 30px;
-            background-color: rgba(142, 124, 195, 0.7); 
-            border-radius: 10px;
-            box-shadow: 0 0 10px rgba(0,0,0,0.3);
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            gap: 15px;
-            }
-            .inputs{
-            width:50%;
-            border-radius: 16px;
-            background-color: rgba(255, 255, 255, .7);
-            flex: auto;
-            font-family: 'MiFuenteTexto',sans-serif;
-            font-size: x-large;
-            }
-            h2{
-                font-family: 'MiFuenteTitulos',sans-serif ;
-                font-size: xx-large;
-            }
-            
-        </style>
-    </head>
-    <body>
-        <form class="login">
-            <h2>Inicio de Sesion</h2>
-            <br>
-            <br>
-            <input type="usuario" class="inputs" placeholder="      Usuario" name="usuario" required>
-            <input type="password"class="inputs" placeholder="      Contraseña" name="contraseña" required>
-            <button type="button " class="inputs btn btn-success">Iniciar Sesion</button>
-        </form>
-    </body>
+    .login {
+      width: 400px;
+      padding: 30px;
+      background-color: rgba(142, 124, 195, 0.7); 
+      border-radius: 10px;
+      box-shadow: 0 0 10px rgba(0,0,0,0.3);
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 15px;
+    }
+
+    .inputs {
+      width: 70%;
+      border-radius: 16px;
+      background-color: rgba(255, 255, 255, .7);
+      font-size: large;
+      padding: 8px;
+      text-align: center;
+    }
+
+    h2 {
+      font-family: sans-serif;
+      font-size: xx-large;
+      color: white;
+    }
+  </style>
+</head>
+
+<body>
+  <form class="login">
+    <h2>Inicio de Sesión</h2>
+    <input type="text" class="inputs" placeholder="Usuario" id="usr" required>
+    <input type="password" class="inputs" placeholder="Contraseña" id="psw" required>
+    <button type="button" onclick="validar()" class="btn btn-success">Iniciar Sesión</button>
+  </form>
+
+  <script>
+    const DEMO_USER = 'Admin';
+    const DEMO_PASSWORD = '1234';
+
+    function validar() {
+      const user = document.getElementById('usr').value.trim();
+      const password = document.getElementById('psw').value;
+
+      if (user !== DEMO_USER) {
+        showError('Usuario incorrecto.');
+        return;
+      }
+
+      if (password !== DEMO_PASSWORD) {
+        showError('Contraseña incorrecta.');
+        return;
+      }
+
+      
+      sessionStorage.setItem('user', user);
+      window.location.href = 'index.html'; 
+    }
+
+    function showError(msg) {
+      alert(msg); 
+    }
+  </script>
+</body>
 </html>
