@@ -1,0 +1,12 @@
+@font-face {
+    font-family: 'MiFuenteTitulos';
+    src: url('font/SportageDemo-DO0A1.otf') format('opentype');
+    font-weight: normal;
+    font-style: normal;
+}
+@font-face {
+    font-family: 'MiFuenteTexto';
+    src: url('font/DeliriumNcv-Vm5e.ttf') format('truetype');
+    font-weight: normal;
+    font-style: normal;
+}
