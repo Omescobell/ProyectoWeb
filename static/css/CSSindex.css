@@ -18,18 +18,13 @@
             margin-bottom: 25px;
         }
         
-        .chart-placeholder {
+        .chart-container {
+            flex-grow: 1; 
             display: flex;
-            align-items: center;
             justify-content: center;
-            width: 100%;
-            height: 250px;
-            background-color: #333;
-            color: #fff;
-            border-radius: 8px;
-            text-align: center;
-            padding: 15px;
-        }
+            align-items: center;
+            min-height: 200px; 
+}
 
         .exercise-table {
             width: 100%;
