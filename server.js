@@ -11,8 +11,19 @@ app.use(express.static("public"));
 app.use(cookieParser());
 
 app.set('view engine', 'ejs');
-app.set('views', path.join(__dirname, 'public'));
+app.set('views', path.join(__dirname, 'views'));
 app.use(express.static(path.join(__dirname, 'public')));
+
+const checkAuth = (req, res, next) => {
+    const usuarioId = req.cookies.usuarioId;
+
+    if (usuarioId) {
+        req.usuarioId = usuarioId;
+        next(); 
+    } else {
+        res.redirect('/login');
+    }
+};
 
 //* Rutas
 app.get('/', checkAuth, (req, res) => {
@@ -34,14 +45,7 @@ app.get('/ejercicios', checkAuth, (req, res) => {
     res.render('ejercicios', { title: 'Ejercicios' });
 });
 
-//* Middleware
-const checkAuth = (req, res, next) => {
-    const usuarioId = req.cookies.usuarioId;
-
-    if (usuarioId) {
-        req.usuarioId = usuarioId;
-        next(); 
-    } else {
-        res.redirect('/login');
-    }
-};
+const PORT = 3000;
+app.listen(PORT, () => {
+    console.log(`Servidor corriendo en el puerto ${PORT}`);
+});
