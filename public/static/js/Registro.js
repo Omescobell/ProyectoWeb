@@ -42,7 +42,7 @@ document.getElementById('registro-Form').addEventListener('submit', async functi
         if(response.ok){
             if(data.success){
                 setCoockie('usuarioId', data.usuarioId, 7);
-                window.location.href = '/index.ejs';
+                window.location.href = '/index';
             }else{
                 throw new Error('Error al registrar usuario');
             }

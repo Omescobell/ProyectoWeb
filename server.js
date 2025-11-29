@@ -29,6 +29,9 @@ const checkAuth = (req, res, next) => {
 app.get('/', checkAuth, (req, res) => {
     res.render('index', { title: 'Pagina Principal' });
 });
+app.get('/index', checkAuth, (req, res) => {
+    res.render('index', { title: 'Pagina Principal' });
+});
 app.get('/login', (req, res) => {
     res.render('login', { title: 'Inicio de Sesión' });
 });
@@ -39,37 +42,64 @@ app.get('/rutinas', checkAuth, (req, res) => {
     res.render('rutinas', { title: 'Rutinas' });
 });
 app.get('/nueva_rutina', checkAuth, (req, res) => {
-    res.render('nueva_rutina', { title: 'Nueva Rutina' });
+    res.render('nuevarutina', { title: 'Nueva Rutina' });
 });
 app.get('/ejercicios', checkAuth, (req, res) => {
-    res.render('ejercicios', { title: 'Ejercicios' });
+    res.render('ejercicio', { title: 'Ejercicios' });
 });
 
 app.post('/api/registro', (req, res) => {
-    const { usuario, correo, contraseña } = req.body;
-    db.conectar();
-    db.query("INSERT INTO usuarios (usuario, correo, contraseña) VALUES (?, ?, ?)", [usuario, correo, contraseña], function(err, results) {
+    const { usuario, correo, psw } = req.body;
+
+    if (!usuario || !correo || !psw) {
+        return res.status(400).json({ success: false, message: "Faltan datos" });
+    }
+    const query = "INSERT INTO usuarios (nombre, email, contrasena) VALUES (?, ?, ?)";
+
+    connection.query(query, [usuario, correo, psw], function(err, results) {
         if (err) {
-            console.error('Error al registrar usuario:', err);
-            res.status(500).send('Error al registrar usuario.');
-            return;
+            console.error('Error SQL:', err);
+            return res.status(500).json({ 
+                success: false, 
+                message: 'Error al registrar en base de datos. Verifique si el correo ya existe.' 
+            });
         }
-        console.log('Usuario registrado exitosamente:', results);
-        res.json({ success: true, usuarioId: results.insertId });
+        
+        res.cookie('usuarioId', results.insertId);
+        res.cookie('usuarioNombre', usuario, { encode: String });
+        res.json({ success: true });
     });
 });
 
 app.post('/api/login', (req, res) => {
-    const { usuario, contraseña } = req.body;
-    db.conectar();
-    db.query("SELECT * FROM usuarios WHERE usuario = ? AND contraseña = ?", [usuario, contraseña], function(err, results) {
+    const { correo, contrasena } = req.body;
+
+    const query = "SELECT * FROM usuarios WHERE email = ? AND contrasena = ?";
+    
+    connection.query(query, [correo, contrasena], (err, results) => {
+        if (err) {
+            return res.status(500).json({ success: false, message: "Error de servidor" });
+        }
+
         if (results.length > 0) {
-            res.cookie('usuarioId', results[0].id);
-            res.json({ success: true, usuarioId: results[0].id });
+            const usuario = results[0];
+            res.cookie('usuarioId', usuario.id_usuario);
+            res.cookie('usuarioNombre', usuario.nombre); 
+
+            return res.json({ 
+                success: true, 
+                usuarioId: usuario.id_usuario,
+                usuarioNombre: usuario.nombre 
+            });
         } else {
-            res.json({ success: false });
+            return res.status(401).json({ success: false, message: "Usuario o contraseña incorrectos" });
         }
     });
+});
+
+app.get('/logout', (req, res) => {
+    res.clearCookie('usuarioId');
+    res.redirect('/login');
 });
 
 const PORT = 3000;
