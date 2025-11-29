@@ -32,8 +32,8 @@ app.get('/', checkAuth, (req, res) => {
 app.get('/login', (req, res) => {
     res.render('login', { title: 'Inicio de Sesión' });
 });
-app.get('/register', (req, res) => {
-    res.render('register', { title: 'Registro' });
+app.get('/registro', (req, res) => {
+    res.render('registro', { title: 'Registro' });
 });
 app.get('/rutinas', checkAuth, (req, res) => {
     res.render('rutinas', { title: 'Rutinas' });
@@ -43,6 +43,33 @@ app.get('/nueva_rutina', checkAuth, (req, res) => {
 });
 app.get('/ejercicios', checkAuth, (req, res) => {
     res.render('ejercicios', { title: 'Ejercicios' });
+});
+
+app.post('/api/registro', (req, res) => {
+    const { usuario, correo, contraseña } = req.body;
+    db.conectar();
+    db.query("INSERT INTO usuarios (usuario, correo, contraseña) VALUES (?, ?, ?)", [usuario, correo, contraseña], function(err, results) {
+        if (err) {
+            console.error('Error al registrar usuario:', err);
+            res.status(500).send('Error al registrar usuario.');
+            return;
+        }
+        console.log('Usuario registrado exitosamente:', results);
+        res.json({ success: true, usuarioId: results.insertId });
+    });
+});
+
+app.post('/api/login', (req, res) => {
+    const { usuario, contraseña } = req.body;
+    db.conectar();
+    db.query("SELECT * FROM usuarios WHERE usuario = ? AND contraseña = ?", [usuario, contraseña], function(err, results) {
+        if (results.length > 0) {
+            res.cookie('usuarioId', results[0].id);
+            res.json({ success: true, usuarioId: results[0].id });
+        } else {
+            res.json({ success: false });
+        }
+    });
 });
 
 const PORT = 3000;

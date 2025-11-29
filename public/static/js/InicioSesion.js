@@ -1,28 +1,36 @@
-const db = require("../db.js");
-
-
 function setCoockie(name, value, days) {
     const date = new Date();
     date.setTime(date.getTime() + (days * 24 * 60 * 60 * 1000));
     const expires = "expires=" + date.toUTCString();
     document.cookie = name + "=" + (value || "") + ";" + expires + ";path=/";
-}
 
-function validar() {
-    const user = document.getElementById('usr').value.trim();
-    const password = document.getElementById('psw').value;
-    db.conectar();
-    db.query("SELECT * FROM usuarios WHERE usuario = ? AND contraseña = ?", [user, password], function(err, results) {
-        if (results.length > 0) {
-            setCoockie('user', user, 7);
-            window.location.href = 'index.html';
-        } else {
-            showError('Usuario o contraseña incorrectos.');
+}
+    document.getElementById('login-Form').addEventListener('submit', async function(event){
+    event.preventDefault();
+    const nombre = document.getElementById('usr').value;
+    const contrasena = document.getElementById('psw').value;
+
+    try{
+        const response = await fetch('/api/login', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({ nombre, contrasena })
+        });
+        
+        const data = await response.json();
+        
+        if(response.ok){
+            if(data.success){
+                setCoockie('usuarioId', data.usuarioId, 7);
+                window.location.href = '/index.ejs';
+            }else{
+                throw new Error('Credenciales incorrectas');
+            }
         }
-    });
-}
-
-
-function showError(msg) {
-    alert(msg); 
-}
+    }catch(error){
+        console.error('Error al iniciar sesión:', error);
+        alert('Error al iniciar sesión. Por favor, intente de nuevo.');
+    }
+});
