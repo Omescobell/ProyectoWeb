@@ -13,19 +13,15 @@ app.use(express.static(path.join(__dirname, 'public')));
 app.set('view engine', 'ejs');
 app.set('views', path.join(__dirname, 'views'));
 
-// 🔍 Verificar conexión a BD
+// Verificar conexión a BD
 connection.connect(err => {
-    if (err) {
-        console.error("❌ Error al conectar a la BD:", err);
-    } else {
-        console.log("✔ Conectado a la base de datos");
-    }
+    if (err) console.error("Error al conectar a la BD:", err);
+    else console.log("Conectado a la base de datos");
 });
 
 // Middleware de autenticación
 const checkAuth = (req, res, next) => {
     const usuarioId = req.cookies.usuarioId;
-
     if (usuarioId) {
         req.usuarioId = usuarioId;
         next();
@@ -34,6 +30,9 @@ const checkAuth = (req, res, next) => {
     }
 };
 
+// =======================
+//        RUTAS WEB
+// =======================
 // =======================
 //        RUTAS WEB
 // =======================
@@ -58,6 +57,7 @@ app.get('/rutinas', checkAuth, (req, res) => {
     res.render('rutinas', { title: 'Rutinas' });
 });
 
+// ⚠️ ESTA ES LA RUTA CORRECTA PARA TU ARCHIVO nuevarutina.ejs
 app.get('/nueva_rutina', checkAuth, (req, res) => {
     res.render('nuevarutina', { title: 'Nueva Rutina' });
 });
@@ -74,9 +74,8 @@ app.get('/ejercicios', checkAuth, (req, res) => {
 app.post('/api/registro', (req, res) => {
     const { usuario, correo, psw } = req.body;
 
-    if (!usuario || !correo || !psw) {
+    if (!usuario || !correo || !psw)
         return res.status(400).json({ success: false, message: "Faltan datos" });
-    }
 
     const query = "INSERT INTO usuarios (nombre, email, contrasena) VALUES (?, ?, ?)";
 
@@ -102,15 +101,12 @@ app.post('/api/login', (req, res) => {
     const query = "SELECT * FROM usuarios WHERE email = ? AND contrasena = ?";
 
     connection.query(query, [correo, contrasena], (err, results) => {
-        if (err) {
-            return res.status(500).json({ success: false, message: "Error de servidor" });
-        }
+        if (err) return res.status(500).json({ success: false, message: "Error de servidor" });
 
         if (results.length > 0) {
             const usuario = results[0];
             res.cookie('usuarioId', usuario.id_usuario);
             res.cookie('usuarioNombre', usuario.nombre);
-
             return res.json({
                 success: true,
                 usuarioId: usuario.id_usuario,
@@ -127,7 +123,6 @@ app.get('/logout', (req, res) => {
     res.clearCookie('usuarioId');
     res.redirect('/login');
 });
-
 
 // Obtener categorías
 app.get('/api/categorias', (req, res) => {
@@ -161,11 +156,48 @@ app.get('/api/ejercicios', (req, res) => {
     });
 });
 
-// =======================
-//      SERVIDOR
-// =======================
+// Crear una rutina
+app.post('/api/crear_rutina', (req, res) => {
+    const id_usuario = req.cookies.usuarioId;
+    const { nombre, ejercicios } = req.body;
+
+    if (!id_usuario)
+        return res.status(403).json({ success: false, message: "No autenticado" });
+
+    if (!nombre || ejercicios.length === 0)
+        return res.status(400).json({ success: false, message: "Datos incompletos" });
+
+    const queryRutina = "INSERT INTO rutinas (id_usuario, nombre) VALUES (?, ?)";
+
+    connection.query(queryRutina, [id_usuario, nombre], (err, result) => {
+        if (err) {
+            console.log(err);
+            return res.status(500).json({ success: false });
+        }
+
+        const id_rutina = result.insertId;
+
+        const queryDetalle =
+            "INSERT INTO rutina_detalle (id_rutina, id_ejercicio, series, repeticiones, descanso_segundos) VALUES ?";
+
+        const values = ejercicios.map(ej => [
+            id_rutina,
+            ej.id_ejercicio,
+            ej.series,
+            ej.repeticiones,
+            ej.descanso_segundos
+        ]);
+
+        connection.query(queryDetalle, [values], (err2) => {
+            if (err2) {
+                console.log(err2);
+                return res.status(500).json({ success: false });
+            }
+
+            res.json({ success: true });
+        });
+    });
+});
 
 const PORT = 3000;
-app.listen(PORT, () => {
-    console.log(`✔ Servidor corriendo en el puerto ${PORT}`);
-});
+app.listen(PORT, () => console.log(`Servidor corriendo en ${PORT}`));
