@@ -86,8 +86,9 @@
                         <option value="espalda">Espalda</option>
                         <option value="pierna">Pierna</option>
                         <option value="hombro">Hombro</option>
-                        <option value="biceps">Bíceps</option>
-                        <option value="triceps">Tríceps</option>
+                        <option value="gluteos">Gluteos</option>
+                        <option value="brazos">Brazos</option>
+                        <option value="abdomen">Abdomen</option>
                     </select>
                 </div>
                     
@@ -147,6 +148,42 @@
             </div>
         </div>
     </main>
+    <div class="modal fade" id="modalConfigEjercicio" tabindex="-1" aria-labelledby="modalConfigLabel" aria-hidden="true">
+  <div class="modal-dialog modal-dialog-centered">
+    <div class="modal-content">
+      <div class="modal-header bg-light">
+        <h5 class="modal-title" id="modalConfigLabel">Configurar Ejercicio</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+      <div class="modal-body">
+        <form id="form-config-ejercicio">
+            <!-- Inputs para Series, Reps y Descanso -->
+            <div class="mb-3">
+                <label for="inputSeries" class="form-label fw-bold">Series</label>
+                <input type="number" class="form-control" id="inputSeries" placeholder="Ej: 4" min="1" required>
+            </div>
+            
+            <div class="mb-3">
+                <label for="inputReps" class="form-label fw-bold">Repeticiones</label>
+                <input type="number" class="form-control" id="inputReps" placeholder="Ej: 12" min="1" required>
+            </div>
+
+            <div class="mb-3">
+                <label for="inputDescanso" class="form-label fw-bold">Descanso (segundos)</label>
+                <input type="number" class="form-control" id="inputDescanso" placeholder="Ej: 60" value="60">
+            </div>
+            
+            <!-- Campos ocultos para guardar IDs temporalmente -->
+            <input type="hidden" id="hiddenRutinaId">
+        </form>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
+        <button type="button" class="btn btn-primary" id="btn-guardar-configuracion">Guardar en Rutina</button>
+      </div>
+    </div>
+  </div>
+</div>
 
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js" 
     integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz" crossorigin="anonymous"></script>

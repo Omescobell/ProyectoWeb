@@ -262,7 +262,41 @@ app.get('/api/rutinas', checkAuth, (req, res) => {
         res.json(results);
     });
 });
+app.get('/api/mis-rutinas', checkAuth, (req, res) => {
+    const usuarioId = req.cookies.usuarioId; // O req.usuarioId si usas el middleware
+    const query = "SELECT id_rutina, nombre FROM rutinas WHERE id_usuario = ?";
+    
+    connection.query(query, [usuarioId], (err, results) => {
+        if (err) {
+            console.error(err);
+            return res.status(500).json({ success: false, message: "Error al cargar rutinas" });
+        }
+        res.json({ success: true, rutinas: results });
+    });
+});
+app.post('/api/rutinas/agregar-detalle', checkAuth, (req, res) => {
+    // Leemos TODOS los datos necesarios del cuerpo de la petición
+    const { id_rutina, id_ejercicio, series, repeticiones, descanso } = req.body;
 
+    // Validación
+    if (!id_rutina || !id_ejercicio || !series || !repeticiones) {
+        return res.status(400).json({ success: false, message: "Faltan datos obligatorios" });
+    }
+
+    const query = `
+        INSERT INTO rutina_detalle (id_rutina, id_ejercicio, series, repeticiones, descanso_segundos) 
+        VALUES (?, ?, ?, ?, ?)
+    `;
+
+    // Usamos las variables que acabamos de leer
+    connection.query(query, [id_rutina, id_ejercicio, series, repeticiones, descanso || 60], (err, result) => {
+        if (err) {
+            console.error("Error al agregar ejercicio:", err);
+            return res.status(500).json({ success: false, message: "Error en el servidor" });
+        }
+        res.json({ success: true, message: "Ejercicio agregado correctamente" });
+    });
+});
 // Obtener detalle de rutina
 app.get('/api/rutina_detalle', checkAuth, (req, res) => {
     const id_rutina = req.query.id_rutina;
@@ -297,6 +331,23 @@ app.delete('/api/rutina', checkAuth, (req, res) => {
 
             res.json({ success: true });
         });
+    });
+});
+// Agregar ejercicio a rutina 
+
+app.post('/api/rutinas/agregar-ejercicio', checkAuth, (req, res) => {
+    const { id_rutina, id_ejercicio } = req.body;
+    if (!id_rutina || !id_ejercicio) {
+        return res.status(400).json({ success: false, message: "Datos incompletos" });
+    }
+    const query = "INSERT IGNORE INTO rutina_detalle (id_rutina, id_ejercicio, series, repeticiones, descanso_segundos) VALUES (?, ?, ?, ?, ?)";
+
+    connection.query(query, [id_rutina, id_ejercicio, series, repeticiones, descanso_segundos], (err, result) => {
+        if (err) {
+            console.error("Error al agregar ejercicio:", err);
+            return res.status(500).json({ success: false, message: "Error en el servidor" });
+        }
+        res.json({ success: true, message: "Ejercicio agregado correctamente" });
     });
 });
 
