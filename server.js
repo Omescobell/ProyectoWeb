@@ -194,8 +194,8 @@ app.get('/api/ejercicios/detalle/:id_ejercicio', (req, res) => {
             e.descripcion, 
             c.nombre as nombre_categoria 
         FROM ejercicios e 
-        INNER JOIN categoria c ON e.id_categoria = c.id_categoria 
-        WHERE e.id_ejercicio = ?`; // CAMBIO IMPORTANTE: e.id_ejercicio
+        INNER JOIN categorias c ON e.id_categoria = c.id_categoria 
+        WHERE e.id_ejercicio = ?`;
 
     connection.query(query, [id_ejercicio], (err, results) => {
         if (err) {
