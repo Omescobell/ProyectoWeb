@@ -171,21 +171,41 @@ app.get('/api/categorias', (req, res) => {
     });
 });
 
+
 // Obtener ejercicios
-app.get('/api/ejercicios', (req, res) => {
-    const categoria = req.query.categoria;
+app.get('/api/ejercicios/:id_categoria', (req, res) => {
+    // CAMBIO: Se selecciona 'id_ejercicio' tal como está en tu base de datos
+    const query = "SELECT id_ejercicio, nombre FROM ejercicios WHERE id_categoria = ?"; 
+    connection.query(query, [req.params.id_categoria], (err, results) => {
+        if (err) {
+            console.error("Error SQL:", err);
+            return res.status(500).json({ success: false, message: "Error al obtener ejercicios" });
+        }
+        res.json({ success: true, ejercicios: results }); 
+    });
+});
 
-    let query = "SELECT * FROM ejercicios";
-    let params = [];
+// Obtener detalles de un ejercicio
+app.get('/api/ejercicios/detalle/:id_ejercicio', (req, res) => {
+    const id_ejercicio = req.params.id_ejercicio;
+    const query = `
+        SELECT 
+            e.nombre, 
+            e.descripcion, 
+            c.nombre as nombre_categoria 
+        FROM ejercicios e 
+        INNER JOIN categoria c ON e.id_categoria = c.id_categoria 
+        WHERE e.id_ejercicio = ?`; // CAMBIO IMPORTANTE: e.id_ejercicio
 
-    if (categoria && categoria !== "todos") {
-        query += " WHERE id_categoria = ?";
-        params.push(categoria);
-    }
-
-    connection.query(query, params, (err, results) => {
-        if (err) return res.status(500).json({ error: "Error server" });
-        res.json(results);
+    connection.query(query, [id_ejercicio], (err, results) => {
+        if (err) {
+            console.error('Error al obtener detalles:', err);
+            return res.status(500).json({ success: false, message: "Error al obtener detalles" });
+        }
+        if (results.length === 0) {
+            return res.status(404).json({ success: false, message: "Ejercicio no encontrado" });
+        }
+        res.json({ success: true, ejercicio: results[0] });
     });
 });
 
