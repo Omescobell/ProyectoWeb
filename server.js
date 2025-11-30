@@ -30,7 +30,6 @@ const checkAuth = (req, res, next) => {
     }
 };
 
-
 // =======================
 //        RUTAS WEB
 // =======================
@@ -55,7 +54,6 @@ app.get('/rutinas', checkAuth, (req, res) => {
     res.render('rutinas', { title: 'Rutinas' });
 });
 
-
 app.get('/nueva_rutina', checkAuth, (req, res) => {
     res.render('nuevarutina', { 
         title: 'Nueva Rutina',
@@ -63,9 +61,48 @@ app.get('/nueva_rutina', checkAuth, (req, res) => {
     });
 });
 
-
 app.get('/ejercicios', checkAuth, (req, res) => {
     res.render('ejercicio', { title: 'Ejercicios' });
+});
+
+
+// =======================
+//       API GRAFICAS
+// =======================
+
+// 1. Grupos musculares usados
+app.get('/api/graficas/grupos-musculares', (req, res) => {
+    const query = `
+        SELECT c.nombre AS grupo, COUNT(*) AS total
+        FROM rutina_detalle rd
+        INNER JOIN ejercicios e ON rd.id_ejercicio = e.id_ejercicio
+        INNER JOIN categorias c ON e.id_categoria = c.id_categoria
+        GROUP BY c.nombre;
+    `;
+
+    connection.query(query, (err, results) => {
+        if (err) return res.status(500).json([]);
+
+        res.json(results);
+    });
+});
+
+// 2. Ejercicios más realizados
+app.get('/api/graficas/ejercicios-mas-realizados', (req, res) => {
+    const query = `
+        SELECT e.nombre AS ejercicio, COUNT(*) AS veces
+        FROM rutina_detalle rd
+        INNER JOIN ejercicios e ON rd.id_ejercicio = e.id_ejercicio
+        GROUP BY e.nombre
+        ORDER BY veces DESC
+        LIMIT 5;
+    `;
+
+    connection.query(query, (err, results) => {
+        if (err) return res.status(500).json([]);
+
+        res.json(results);
+    });
 });
 
 // =======================
@@ -129,10 +166,7 @@ app.get('/logout', (req, res) => {
 // Obtener categorías
 app.get('/api/categorias', (req, res) => {
     connection.query("SELECT * FROM categorias", (err, results) => {
-        if (err) {
-            console.error("Error obteniendo categorías:", err);
-            return res.status(500).json({ error: "Error server" });
-        }
+        if (err) return res.status(500).json({ error: "Error server" });
         res.json(results);
     });
 });
@@ -150,15 +184,12 @@ app.get('/api/ejercicios', (req, res) => {
     }
 
     connection.query(query, params, (err, results) => {
-        if (err) {
-            console.error("Error obteniendo ejercicios:", err);
-            return res.status(500).json({ error: "Error server" });
-        }
+        if (err) return res.status(500).json({ error: "Error server" });
         res.json(results);
     });
 });
 
-// Crear una rutina
+// Crear rutina
 app.post('/api/crear_rutina', (req, res) => {
     const id_usuario = req.cookies.usuarioId;
     const { nombre, ejercicios } = req.body;
@@ -172,10 +203,7 @@ app.post('/api/crear_rutina', (req, res) => {
     const queryRutina = "INSERT INTO rutinas (id_usuario, nombre) VALUES (?, ?)";
 
     connection.query(queryRutina, [id_usuario, nombre], (err, result) => {
-        if (err) {
-            console.log(err);
-            return res.status(500).json({ success: false });
-        }
+        if (err) return res.status(500).json({ success: false });
 
         const id_rutina = result.insertId;
 
@@ -191,22 +219,14 @@ app.post('/api/crear_rutina', (req, res) => {
         ]);
 
         connection.query(queryDetalle, [values], (err2) => {
-            if (err2) {
-                console.log(err2);
-                return res.status(500).json({ success: false });
-            }
+            if (err2) return res.status(500).json({ success: false });
 
             res.json({ success: true });
         });
     });
 });
 
-
-// =======================
-//      API RUTINAS
-// =======================
-
-// Obtener rutinas del usuario
+// Obtener rutinas
 app.get('/api/rutinas', checkAuth, (req, res) => {
     const id_usuario = req.cookies.usuarioId;
 
@@ -218,15 +238,12 @@ app.get('/api/rutinas', checkAuth, (req, res) => {
     `;
 
     connection.query(query, [id_usuario], (err, results) => {
-        if (err) {
-            console.error("Error obteniendo rutinas:", err);
-            return res.status(500).json({ success: false });
-        }
+        if (err) return res.status(500).json({ success: false });
         res.json(results);
     });
 });
 
-// Obtener detalle de una rutina
+// Obtener detalle de rutina
 app.get('/api/rutina_detalle', checkAuth, (req, res) => {
     const id_rutina = req.query.id_rutina;
 
@@ -240,10 +257,7 @@ app.get('/api/rutina_detalle', checkAuth, (req, res) => {
     `;
 
     connection.query(query, [id_rutina], (err, results) => {
-        if (err) {
-            console.log("Error obteniendo detalles:", err);
-            return res.status(500).json({ success: false });
-        }
+        if (err) return res.status(500).json({ success: false });
         res.json(results);
     });
 });
@@ -256,16 +270,10 @@ app.delete('/api/rutina', checkAuth, (req, res) => {
     const query2 = "DELETE FROM rutinas WHERE id_rutina = ?";
 
     connection.query(query1, [id_rutina], (err) => {
-        if (err) {
-            console.log(err);
-            return res.status(500).json({ success: false });
-        }
+        if (err) return res.status(500).json({ success: false });
 
         connection.query(query2, [id_rutina], (err2) => {
-            if (err2) {
-                console.log(err2);
-                return res.status(500).json({ success: false });
-            }
+            if (err2) return res.status(500).json({ success: false });
 
             res.json({ success: true });
         });
@@ -274,4 +282,3 @@ app.delete('/api/rutina', checkAuth, (req, res) => {
 
 const PORT = 3000;
 app.listen(PORT, () => console.log(`Servidor corriendo en ${PORT}`));
-

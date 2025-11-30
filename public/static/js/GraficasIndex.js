@@ -1,161 +1,115 @@
-// static/js/GraficasIndex.js
-
 document.addEventListener('DOMContentLoaded', () => {
 
     const palette = {
-        primary: '#6a3d9a',   // Morado oscuro
-        secondary: '#8e6cbb', // Morado medio
-        tertiary: '#b39ddb',  // Morado claro
-        light: '#d1c4e9',     // Lavanda
-        lighter: '#e7e0f2',   // Lavanda claro
-        accent: '#c3b1e1',    // Morado
-        darkText: '#4a3357',  // Oscuro morado
+        primary: '#6a3d9a',
+        secondary: '#8e6cbb',
+        tertiary: '#b39ddb',
+        light: '#d1c4e9',
+        lighter: '#e7e0f2',
+        accent: '#c3b1e1',
+        darkText: '#4a3357',
     };
 
-    // Gráfica de Pastel
-    const gruposMuscularesCtx = document.getElementById('gruposMuscularesChart');
-    if (gruposMuscularesCtx) {
-        // Datos de ejemplo. Aqui es donde se van a cargar los datos ya tratados de la base.
-        const gruposMuscularesData = {
-            labels: ['Pierna', 'Pecho', 'Espalda', 'Bíceps', 'Tríceps', 'Hombros', 'Abdomen'],
-            datasets: [{
-                data: [25, 18, 15, 12, 10, 10, 10], // Aqui tienen que ser datos porcentuales, pero ya en este formato
-                backgroundColor: [
-                    palette.primary,
-                    palette.secondary,
-                    palette.tertiary,
-                    palette.light,
-                    palette.lighter,
-                    palette.accent,
-                    palette.darkText
-                ],
-                borderColor: '#ffffff',
-                borderWidth: 2,
-                hoverOffset: 10
-            }]
-        };
+    // ==========================================
+    // 1) GRUPO MUSCULAR MÁS ENTRENADO (PIE CHART)
+    // ==========================================
+    fetch('/api/graficas/grupos-musculares')
+        .then(res => res.json())
+        .then(data => {
+            const labels = data.map(item => item.grupo);
+            const valores = data.map(item => item.total);
 
-        new Chart(gruposMuscularesCtx, {
-            type: 'pie', // 'pie' para pastel completo, 'doughnut' para dona
-            data: gruposMuscularesData,
-            options: {
-                responsive: true,
-                maintainAspectRatio: false,
-                plugins: {
-                    legend: {
-                        position: 'right',
-                        labels: {
-                            color: palette.darkText,
-                            font: {
-                                size: 12
-                            }
-                        }
-                    },
-                    tooltip: {
-                        callbacks: {
-                            label: function(context) {
-                                let label = context.label || '';
-                                if (label) {
-                                    label += ': ';
-                                }
-                                if (context.parsed !== null) {
-                                    label += context.parsed + '%';
-                                }
-                                return label;
-                            }
-                        }
-                    },
-                    datalabels: {
-                        color: '#ffffff', 
-                        formatter: (value, ctx) => {
-                            const total = ctx.chart.data.datasets[0].data.reduce((a, b) => a + b, 0);
-                            const percentage = Math.round((value / total) * 100) + '%';
-                            return percentage;
-                        },
-                        font: {
-                            weight: 'bold',
-                            size: 10
-                        }
-                    }
-                }
-            },
-            plugins: [ChartDataLabels]
-        });
-    }
+            const ctx = document.getElementById('gruposMuscularesChart');
+            if (!ctx) return;
 
-    // --- Gráfica de Barras
-    const ejerciciosMasHacesCtx = document.getElementById('ejerciciosMasHacesChart');
-    if (ejerciciosMasHacesCtx) {
-        // Datos de ejemplo. Aquí es donde conectarías con tu BD.
-        const ejerciciosMasHacesData = {
-            labels: ['Sentadilla', 'Press Banca', 'Peso Muerto', 'Dominadas', 'Remo'],
-            datasets: [{
-                label: 'Veces Realizadas',
-                data: [150, 120, 90, 80, 70], // Aqui tienen que ser datos porcentuales, pero ya en este formato
-                backgroundColor: [
-                    palette.primary,
-                    palette.secondary,
-                    palette.tertiary,
-                    palette.light,
-                    palette.accent
-                ],
-                borderColor: palette.primary,
-                borderWidth: 1
-            }]
-        };
-
-        new Chart(ejerciciosMasHacesCtx, {
-            type: 'bar',
-            data: ejerciciosMasHacesData,
-            options: {
-                responsive: true,
-                maintainAspectRatio: false,
-                indexAxis: 'x', // y para horizontal, x para vertical
-                plugins: {
-                    legend: {
-                        display: false 
-                    },
-                    title: {
-                        display: false,
-                    },
-                    datalabels: {
-                        anchor: 'end',
-                        align: 'end',
-                        color: palette.darkText,
-                        formatter: (value) => value + ' veces',
-                        font: {
-                            weight: 'bold',
-                            size: 10
-                        }
+            new Chart(ctx, {
+                type: 'pie',
+                data: {
+                    labels,
+                    datasets: [{
+                        data: valores,
+                        backgroundColor: [
+                            palette.primary,
+                            palette.secondary,
+                            palette.tertiary,
+                            palette.light,
+                            palette.lighter,
+                            palette.accent
+                        ],
+                        borderColor: '#fff',
+                        borderWidth: 2,
+                        hoverOffset: 10
+                    }]
+                },
+                options: {
+                    plugins: {
+                        legend: { position: 'right' }
                     }
                 },
-                scales: {
-                    x: {
-                        beginAtZero: true,
-                        ticks: {
-                            color: palette.darkText,
-                            font: {
-                                size: 10
-                            }
-                        },
-                        grid: {
-                            color: palette.lighter // Líneas de la cuadrícula
-                        }
-                    },
-                    y: {
-                        ticks: {
-                            color: palette.darkText,
-                            font: {
-                                size: 10
-                            }
-                        },
-                        grid: {
-                            color: palette.lighter
-                        }
-                    }
-                }
-            },
-            plugins: [ChartDataLabels]
+                plugins: [ChartDataLabels]
+            });
         });
-    }
+
+    // =====================================================
+    // 2) TABLA: EJERCICIOS QUE MÁS APARECEN EN LAS RUTINAS
+    // =====================================================
+    fetch('/api/graficas/ejercicios-mas-realizados')
+        .then(res => res.json())
+        .then(data => {
+            const table = document.querySelector(".exercise-table");
+            if (!table) return;
+
+            table.innerHTML = `
+                <div class="row header-row">
+                    <div class="col">Nombre</div>
+                    <div class="col">Veces</div>
+                </div>
+            `;
+
+            data.forEach(item => {
+                table.innerHTML += `
+                    <div class="row table-row">
+                        <div class="col">${item.ejercicio}</div>
+                        <div class="col">${item.veces}</div>
+                    </div>
+                `;
+            });
+        });
+
+    // ======================================================
+    // 3) GRÁFICA DE BARRAS — EJERCICIOS MÁS REALIZADOS
+    // ======================================================
+    fetch('/api/graficas/ejercicios-mas-realizados')
+        .then(res => res.json())
+        .then(data => {
+            const labels = data.map(item => item.ejercicio);
+            const valores = data.map(item => item.veces);
+
+            const ctx = document.getElementById('ejerciciosMasHacesChart');
+            if (!ctx) return;
+
+            new Chart(ctx, {
+                type: 'bar',
+                data: {
+                    labels,
+                    datasets: [{
+                        data: valores,
+                        backgroundColor: [
+                            palette.primary,
+                            palette.secondary,
+                            palette.tertiary,
+                            palette.light,
+                            palette.accent
+                        ]
+                    }]
+                },
+                options: {
+                    plugins: { legend: { display: false } },
+                    scales: {
+                        y: { beginAtZero: true }
+                    }
+                },
+                plugins: [ChartDataLabels]
+            });
+        });
 });
