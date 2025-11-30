@@ -38,7 +38,7 @@
 <body>
     <nav class="navbar navbar-expand-lg navbar-custom">
     <div class="container-fluid">
-    <a class="navbar-brand d-flex align-items-center" href="#">
+    <a class="navbar-brand d-flex align-items-center" href="/index">
         <svg xmlns="http://www.w3.org/2000/svg" width="40" height="40" fill="currentColor" class="bi bi-emoji-sunglasses-fill mr-4" viewBox="0 0 16 16">
             <path d="M8 16A8 8 0 1 0 8 0a8 8 0 0 0 0 16M2.31 5.243A1 1 0 0 1 3.28 4H6a1 1 0 0 1 1 1v.116A4.2 4.2 0 0 1 8 5c.35 0 .69.04 1 .116V5a1 1 0 0 1 1-1h2.72a1 1 0 0 1 .97 1.243l-.311 1.242A2 2 0 0 1 11.439 8H11a2 2 0 0 1-1.994-1.839A3 3 0 0 0 8 6c-.393 0-.74.064-1.006.161A2 2 0 0 1 5 8h-.438a2 2 0 0 1-1.94-1.515zM4.969 9.75A3.5 3.5 0 0 0 8 11.5a3.5 3.5 0 0 0 3.032-1.75.5.5 0 1 1 .866.5A4.5 4.5 0 0 1 8 12.5a4.5 4.5 0 0 1-3.898-2.25.5.5 0 0 1 .866-.5z"/>
         </svg>
@@ -176,82 +176,11 @@
         </div>
     </div>
 
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
     <script src="static/js/navbar.js"></script>
+    <script src="static/js/rutinas.js"></script>
 
-    <script>
-const selectRutina = document.getElementById("select-rutina");
-const tablaBody = document.getElementById("tabla-rutina-body");
-const btnEliminar = document.getElementById("btn-confirmar-eliminar");
-
-// ---------------------------
-// Cargar rutinas del usuario
-// ---------------------------
-function cargarRutinas() {
-    fetch("/api/rutinas")
-        .then(r => r.json())
-        .then(data => {
-            selectRutina.innerHTML = `<option selected>Selecciona una Rutina</option>`;
-            
-            data.forEach(r => {
-                selectRutina.innerHTML += `
-                    <option value="${r.id_rutina}">
-                        ${r.nombre} - ${r.fecha_creacion.substring(0,10)}
-                    </option>`;
-            });
-        });
-}
-
-// ---------------------------
-// Cargar detalles de rutina
-// ---------------------------
-selectRutina.addEventListener("change", () => {
-    const id = selectRutina.value;
-
-    if (id === "Selecciona una Rutina") return;
-
-    fetch(`/api/rutina_detalle?id_rutina=${id}`)
-        .then(r => r.json())
-        .then(data => {
-            tablaBody.innerHTML = "";
-
-            data.forEach(d => {
-                tablaBody.innerHTML += `
-                    <tr>
-                        <td>${d.ejercicio}</td>
-                        <td>${d.repeticiones}</td>
-                        <td>${d.categoria}</td>
-                        <td>${d.series}</td>
-                    </tr>
-                `;
-            });
-        });
-});
-
-// ---------------------------
-// Eliminar Rutina
-// ---------------------------
-btnEliminar.addEventListener("click", () => {
-    const id = selectRutina.value;
-
-    fetch("/api/rutina", {
-        method: "DELETE",
-        headers: {"Content-Type": "application/json"},
-        body: JSON.stringify({ id_rutina: id })
-    })
-    .then(r => r.json())
-    .then(res => {
-        if (res.success) {
-            alert("Rutina eliminada");
-            cargarRutinas();
-            tablaBody.innerHTML = "";
-        }
-    });
-});
-
-// Inicializar
-cargarRutinas();
-</script>
 
 </body>
 <footer class="footer">
