@@ -30,9 +30,7 @@ const checkAuth = (req, res, next) => {
     }
 };
 
-// =======================
-//        RUTAS WEB
-// =======================
+
 // =======================
 //        RUTAS WEB
 // =======================
@@ -57,7 +55,7 @@ app.get('/rutinas', checkAuth, (req, res) => {
     res.render('rutinas', { title: 'Rutinas' });
 });
 
-// ⚠️ ESTA ES LA RUTA CORRECTA PARA TU ARCHIVO nuevarutina.ejs
+
 app.get('/nueva_rutina', checkAuth, (req, res) => {
     res.render('nuevarutina', { title: 'Nueva Rutina' });
 });
@@ -199,5 +197,77 @@ app.post('/api/crear_rutina', (req, res) => {
     });
 });
 
+
+// =======================
+//      API RUTINAS
+// =======================
+
+// Obtener rutinas del usuario
+app.get('/api/rutinas', checkAuth, (req, res) => {
+    const id_usuario = req.cookies.usuarioId;
+
+    const query = `
+        SELECT id_rutina, nombre, fecha_creacion
+        FROM rutinas
+        WHERE id_usuario = ?
+        ORDER BY fecha_creacion DESC
+    `;
+
+    connection.query(query, [id_usuario], (err, results) => {
+        if (err) {
+            console.error("Error obteniendo rutinas:", err);
+            return res.status(500).json({ success: false });
+        }
+        res.json(results);
+    });
+});
+
+// Obtener detalle de una rutina
+app.get('/api/rutina_detalle', checkAuth, (req, res) => {
+    const id_rutina = req.query.id_rutina;
+
+    const query = `
+        SELECT rd.series, rd.repeticiones, rd.descanso_segundos,
+               e.nombre AS ejercicio, c.nombre AS categoria
+        FROM rutina_detalle rd
+        INNER JOIN ejercicios e ON rd.id_ejercicio = e.id_ejercicio
+        INNER JOIN categorias c ON e.id_categoria = c.id_categoria
+        WHERE rd.id_rutina = ?;
+    `;
+
+    connection.query(query, [id_rutina], (err, results) => {
+        if (err) {
+            console.log("Error obteniendo detalles:", err);
+            return res.status(500).json({ success: false });
+        }
+        res.json(results);
+    });
+});
+
+// Eliminar rutina
+app.delete('/api/rutina', checkAuth, (req, res) => {
+    const id_rutina = req.body.id_rutina;
+
+    const query1 = "DELETE FROM rutina_detalle WHERE id_rutina = ?";
+    const query2 = "DELETE FROM rutinas WHERE id_rutina = ?";
+
+    connection.query(query1, [id_rutina], (err) => {
+        if (err) {
+            console.log(err);
+            return res.status(500).json({ success: false });
+        }
+
+        connection.query(query2, [id_rutina], (err2) => {
+            if (err2) {
+                console.log(err2);
+                return res.status(500).json({ success: false });
+            }
+
+            res.json({ success: true });
+        });
+    });
+});
+
 const PORT = 3000;
 app.listen(PORT, () => console.log(`Servidor corriendo en ${PORT}`));
+
