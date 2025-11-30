@@ -57,8 +57,12 @@ app.get('/rutinas', checkAuth, (req, res) => {
 
 
 app.get('/nueva_rutina', checkAuth, (req, res) => {
-    res.render('nuevarutina', { title: 'Nueva Rutina' });
+    res.render('nuevarutina', { 
+        title: 'Nueva Rutina',
+        usuarioNombre: req.cookies.usuarioNombre || "Usuario"
+    });
 });
+
 
 app.get('/ejercicios', checkAuth, (req, res) => {
     res.render('ejercicio', { title: 'Ejercicios' });

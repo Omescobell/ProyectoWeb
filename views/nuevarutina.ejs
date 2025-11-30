@@ -6,200 +6,149 @@
     <title>Nueva Rutina</title>
 
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
-    <link href="/static/css/CSSNuevaRutina.css" rel="stylesheet">
+    <link href="static/css/CSSNuevaRutina.css" rel="stylesheet">
 
     <style>
         .navbar-custom { background-color: #c3b1e1; }
-        .footer { background-color: #c3b1e1; padding: 2rem 1rem; }
-        .opcion-ejercicio { display: flex; gap: 10px; padding: 5px; }
+        .footer {
+            background-color: #c3b1e1;
+            color: #c3b1e1;
+            padding: 2rem 1rem;
+        }
+        @media (min-width: 768px) {
+            .footer { padding: 3rem 1rem; margin-top: 7.2%; }
+        }
+        @media (min-width: 1200px) {
+            .footer { padding: 4rem 1rem; }
+        }
+
+        /* para el textito grisecito */
+        #input-nombre-rutina::placeholder {
+            color: #a5a5a5;
+            opacity: 1;
+        }
     </style>
 </head>
-
 <body>
 
-<!-- NAVBAR -->
-<nav class="navbar navbar-expand-lg navbar-custom">
+    
+       <nav class="navbar navbar-expand-lg navbar-custom">
     <div class="container-fluid">
-        <a class="navbar-brand d-flex align-items-center" href="/index">
-            <span class="fw-bold">Nueva Rutina</span>
-        </a>
-
-        <div class="collapse navbar-collapse justify-content-end">
-            <ul class="navbar-nav">
-                <li class="nav-item dropdown">
-                    <a class="nav-link dropdown-toggle" data-bs-toggle="dropdown">
-                        <b>Menú</b>
-                    </a>
-                    <ul class="dropdown-menu dropdown-menu-end">
-                        <li><a class="dropdown-item" href="/nueva_rutina">Nueva rutina</a></li>
-                        <li><a class="dropdown-item" href="/ejercicios">Ejercicios</a></li>
-                        <li><a class="dropdown-item" href="/rutinas">Rutinas</a></li>
-                        <li><hr class="dropdown-divider"></li>
-                        <li><a class="dropdown-item text-danger" href="/logout">Salir</a></li>
-                    </ul>
-                </li>
-            </ul>
+    <a class="navbar-brand d-flex align-items-center" href="#">
+        <svg xmlns="http://www.w3.org/2000/svg" width="40" height="40" fill="currentColor" class="bi bi-emoji-sunglasses-fill mr-4" viewBox="0 0 16 16">
+            <path d="M8 16A8 8 0 1 0 8 0a8 8 0 0 0 0 16M2.31 5.243A1 1 0 0 1 3.28 4H6a1 1 0 0 1 1 1v.116A4.2 4.2 0 0 1 8 5c.35 0 .69.04 1 .116V5a1 1 0 0 1 1-1h2.72a1 1 0 0 1 .97 1.243l-.311 1.242A2 2 0 0 1 11.439 8H11a2 2 0 0 1-1.994-1.839A3 3 0 0 0 8 6c-.393 0-.74.064-1.006.161A2 2 0 0 1 5 8h-.438a2 2 0 0 1-1.94-1.515zM4.969 9.75A3.5 3.5 0 0 0 8 11.5a3.5 3.5 0 0 0 3.032-1.75.5.5 0 1 1 .866.5A4.5 4.5 0 0 1 8 12.5a4.5 4.5 0 0 1-3.898-2.25.5.5 0 0 1 .866-.5z"/>
+        </svg>
+            <div class="d-flex flex-column text-dark" style="margin-left: 3%;">
+            <span class="small">Hola Usuario</span>
+            <span class="fw-bold" id="User">Oscar</span> 
         </div>
+    </a>
+
+    <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNavDropdown" aria-controls="navbarNavDropdown" aria-expanded="false" aria-label="Toggle navigation">
+        <span class="navbar-toggler-icon"></span>
+    </button>
+    
+    <div class="collapse navbar-collapse justify-content-end" id="navbarNavDropdown">
+        <ul class="navbar-nav">
+        <li class="nav-item dropdown">
+            <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+            <svg xmlns="http://www.w3.org/2000/svg" width="30" height="30" fill="currentColor" class="bi bi-list" viewBox="0 0 16 16">
+                <path fill-rule="evenodd" d="M2.5 12a.5.5 0 0 1 .5-.5h10a.5.5 0 0 1 0 1H3a.5.5 0 0 1-.5-.5m0-4a.5.5 0 0 1 .5-.5h10a.5.5 0 0 1 0 1H3a.5.5 0 0 1-.5-.5m0-4a.5.5 0 0 1 .5-.5h10a.5.5 0 0 1 0 1H3a.5.5 0 0 1-.5-.5"/>
+            </svg>
+            </a>
+            <ul class="dropdown-menu dropdown-menu-end">
+            <li><a class="dropdown-item" href="/nueva_rutina">Nueva rutina</a></li>
+            <li><a class="dropdown-item" href="/ejercicios">Ejercicios</a></li>
+            <li><a class="dropdown-item" href="/rutinas">Rutinas</a></li>
+            
+            <li><hr class="dropdown-divider"></li>
+            <li><a class="dropdown-item text-danger" href="#" id="btn-logout">Salir</a></li>
+            </ul>
+        </li>
+        </ul>
+    </div>
     </div>
 </nav>
 
-<!-- CONTENIDO -->
-<main class="container my-5">
-    <div class="row g-5">
+    <!-- CONTENIDO -->
+    <main class="container my-5">
+        <div class="row g-5">
 
-        <!-- IZQUIERDA (categorías y ejercicios) -->
-        <div class="col-lg-4">
-            <label class="form-label">Músculo</label>
-            <select class="form-select" id="select-musculo-filtro">
-                <option value="todos">Todos los músculos</option>
-                <option value="1">Pecho</option>
-                <option value="2">Espalda</option>
-                <option value="3">Piernas</option>
-                <option value="4">Brazos</option>
-                <option value="5">Hombros</option>
-                <option value="6">Glúteos</option>
-                <option value="7">Abdomen</option>
-            </select>
+            <!-- COLUMNA IZQUIERDA -->
+            <div class="col-lg-4">
 
-            <div id="contenedor-ejercicios-disponibles" class="mt-3 p-2 border rounded">
-                <p class="text-center text-muted">Cargando ejercicios...</p>
-            </div>
-        </div>
+                <div class="mb-3">
+                    <label for="select-musculo-filtro" class="form-label sketch-label">Músculo</label>
+                    <select class="form-select sketch-border" id="select-musculo-filtro">
+                        <option value="0">Todos los músculos</option>
+                    </select>
+                </div>
 
-        <!-- DERECHA (tabla y botón guardar) -->
-        <div class="col-lg-8">
+                <div class="lista-ejercicios-seleccion sketch-border" id="contenedor-ejercicios-disponibles">
+                    Cargando ejercicios...
+                </div>
 
-            <label class="form-label">Nombre de la rutina</label>
-            <input type="text" id="input-nombre-rutina" class="form-control" placeholder="Ej: Rutina Pecho Lunes">
-
-            <div class="table-responsive mt-4">
-                <table class="table table-striped">
-                    <thead>
-                        <tr>
-                            <th>Ejercicio</th>
-                            <th>Reps</th>
-                            <th>Descanso (seg)</th>
-                            <th>Series</th>
-                        </tr>
-                    </thead>
-                    <tbody id="tabla-nueva-rutina-body"></tbody>
-                </table>
             </div>
 
-            <button class="btn btn-success mt-3" id="btn-crear-rutina">+ Crear Rutina</button>
+            <!-- COLUMNA DERECHA -->
+            <div class="col-lg-8">
+
+                <div class="mb-4">
+                    <label class="form-label sketch-label-large">Nombre de la rutina</label>
+
+                    <!-- AQUÍ SOLO SE AÑADIÓ EL TEXTITO GRIS -->
+                    <input  
+                        type="text" 
+                        class="form-control sketch-input" 
+                        id="input-nombre-rutina"
+                        placeholder="Ej: Rutina de Lunes - Pecho y Tríceps"
+                    >
+                </div>
+
+                <div class="table-responsive sketch-border mb-4">
+                    <table class="table table-striped mb-0">
+                        <thead>
+                            <tr>
+                                <th>Ejercicio</th>
+                                <th>Repeticiones</th>
+                                <th>Grupo Muscular</th>
+                                <th>Series</th>
+                            </tr>
+                        </thead>
+                        <tbody id="tabla-nueva-rutina-body"></tbody>
+                    </table>
+                </div>
+
+                <div class="d-flex justify-content-start gap-3">
+                    <button class="btn sketch-border btn-crear" id="btn-crear-rutina">+ Crear Rutina</button>
+
+                    <button class="btn sketch-border btn-imprimir">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-printer-fill" viewBox="0 0 16 16">
+                            <path d="M5 1a2 2 0 0 0-2 2v1h10V3a2 2 0 0 0-2-2zm6 8H5a1 1 0 0 0-1 1v3a1 1 0 0 0 1 1h6a1 1 0 0 0 1-1v-3a1 1 0 0 0-1-1"/>
+                            <path d="M0 7a2 2 0 0 1 2-2h12a2 2 0 0 1 2 2v3a2 2 0 0 1-2 2h-1v-2a2 2 0 0 0-2-2H5a2 2 0 0 0-2 2v2H2a2 2 0 0 1-2-2zm2.5 1a.5.5 0 1 0 0-1 .5.5 0 0 0 0 1"/>
+                        </svg>
+                        Imprimir
+                    </button>
+                </div>
+
+            </div>
+
         </div>
-    </div>
-</main>
+    </main>
 
-<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+    
 
-<!-- JS: cargar ejercicios -->
-<script>
-const selectMusculo = document.getElementById("select-musculo-filtro");
-const contenedor = document.getElementById("contenedor-ejercicios-disponibles");
-const tabla = document.getElementById("tabla-nueva-rutina-body");
-
-//  Cargar ejercicios al inicio
-cargarEjercicios("todos");
-
-selectMusculo.addEventListener("change", () => {
-    cargarEjercicios(selectMusculo.value);
-});
-
-function cargarEjercicios(categoria) {
-    contenedor.innerHTML = `<p class="text-center text-muted">Cargando ejercicios...</p>`;
-
-    fetch(`/api/ejercicios?categoria=${categoria}`)
-        .then(res => res.json())
-        .then(data => {
-            contenedor.innerHTML = "";
-
-            if (data.length === 0) {
-                contenedor.innerHTML = `<p class="text-center">No hay ejercicios.</p>`;
-                return;
-            }
-
-            data.forEach(ej => {
-                contenedor.innerHTML += `
-                    <div class="opcion-ejercicio">
-                        <input type="checkbox" value="${ej.id_ejercicio}" data-nombre="${ej.nombre}">
-                        <label>${ej.nombre}</label>
-                    </div>
-                `;
-            });
-        });
-}
-
-// Agregar o quitar de la tabla
-contenedor.addEventListener("change", (e) => {
-    if (e.target.type === "checkbox") {
-        if (e.target.checked) {
-            agregarEjercicioATabla(e.target.value, e.target.dataset.nombre);
-        } else {
-            quitarEjercicioDeTabla(e.target.value);
-        }
-    }
-});
-
-function agregarEjercicioATabla(id, nombre) {
-    tabla.insertAdjacentHTML("beforeend", `
-        <tr id="fila-${id}">
-            <td>${nombre}</td>
-            <td><input type="number" value="10" class="form-control"></td>
-            <td><input type="number" value="60" class="form-control"></td>
-            <td><input type="number" value="3" class="form-control"></td>
-        </tr>
-    `);
-}
-
-function quitarEjercicioDeTabla(id) {
-    const fila = document.getElementById(`fila-${id}`);
-    if (fila) fila.remove();
-}
-
-// Crear rutina
-document.getElementById("btn-crear-rutina").addEventListener("click", () => {
-    const nombre = document.getElementById("input-nombre-rutina").value.trim();
-
-    if (!nombre) return alert("Escribe un nombre para la rutina.");
-
-    const ejercicios = [];
-
-    tabla.querySelectorAll("tr").forEach(row => {
-        const id = row.id.replace("fila-", "");
-        const reps = row.children[1].querySelector("input").value;
-        const descanso = row.children[2].querySelector("input").value;
-        const series = row.children[3].querySelector("input").value;
-
-        ejercicios.push({
-            id_ejercicio: id,
-            repeticiones: reps,
-            descanso_segundos: descanso,
-            series: series
-        });
-    });
-
-    if (ejercicios.length === 0) {
-        return alert("Selecciona al menos un ejercicio.");
-    }
-
-    fetch("/api/crear_rutina", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ nombre, ejercicios })
-    })
-    .then(r => r.json())
-    .then(res => {
-        if (res.success) {
-            alert("Rutina creada correctamente");
-            window.location.href = "/rutinas";
-        } else {
-            alert("Error creando rutina");
-        }
-    });
-});
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js" 
+    integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz" crossorigin="anonymous"></script>
+<script src="static/js/nuevarutina.js">
+    
 </script>
-
-<footer class="footer"></footer>
+    
 </body>
-</html>
+<footer class="footer">
+</footer>
+</html> 
+    
+
+
+
