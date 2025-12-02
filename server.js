@@ -349,13 +349,21 @@ app.delete('/api/rutina', checkAuth, (req, res) => {
 // Agregar ejercicio a rutina 
 
 app.post('/api/rutinas/agregar-ejercicio', checkAuth, (req, res) => {
-    const { id_rutina, id_ejercicio } = req.body;
+
+    const { id_rutina, id_ejercicio, series, repeticiones, descanso_segundos } = req.body; 
+
     if (!id_rutina || !id_ejercicio) {
         return res.status(400).json({ success: false, message: "Datos incompletos" });
     }
+    
+    // Asegurar valores por defecto si vienen vacíos
+    const s = series || 0;
+    const r = repeticiones || 0;
+    const d = descanso_segundos || 60;
+
     const query = "INSERT IGNORE INTO rutina_detalle (id_rutina, id_ejercicio, series, repeticiones, descanso_segundos) VALUES (?, ?, ?, ?, ?)";
 
-    connection.query(query, [id_rutina, id_ejercicio, series, repeticiones, descanso_segundos], (err, result) => {
+    connection.query(query, [id_rutina, id_ejercicio, s, r, d], (err, result) => {
         if (err) {
             console.error("Error al agregar ejercicio:", err);
             return res.status(500).json({ success: false, message: "Error en el servidor" });

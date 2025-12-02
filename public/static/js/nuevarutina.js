@@ -93,9 +93,12 @@ document.addEventListener("DOMContentLoaded", () => {
     // ==========================================
     const btnCrear = document.getElementById("btn-crear-rutina");
     if(btnCrear){
-        btnCrear.addEventListener("click", () => {
+        btnCrear.addEventListener("click", (e) => {
+            e.preventDefault(); 
+            
             const inputNombre = document.getElementById("input-nombre-rutina");
             const nombre = inputNombre ? inputNombre.value : "";
+            
             const filas = [...document.querySelectorAll("#tabla-nueva-rutina-body tr")];
 
             if (!nombre || filas.length === 0) {
@@ -110,16 +113,21 @@ document.addEventListener("DOMContentLoaded", () => {
                 descanso_segundos: 60
             }));
 
+            console.log("Enviando datos:", { nombre, ejercicios });
+
             fetch('/api/crear_rutina', {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify({ nombre, ejercicios })
             })
-            .then(r => r.json())
+            .then(r => {
+                if(!r.ok) throw new Error("Error en respuesta del servidor: " + r.status);
+                return r.json();
+            })
             .then(d => {
-                if (!d.success) return alert("Error creando rutina");
+                if (!d.success) return alert("Error creando rutina: " + (d.message || "Desconocido"));
                 alert("Rutina creada correctamente");
-                location.href = "/rutinas";
+                window.location.href = "/rutinas"; // Usar window.location completo es más seguro
             })
             .catch(err => console.error("Error en creación:", err));
         });
