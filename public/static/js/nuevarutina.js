@@ -15,6 +15,7 @@ document.addEventListener("DOMContentLoaded", () => {
                     op.textContent = cat.nombre;
                     select.appendChild(op);
                 });
+                cargarEjercicios();
             }
         })
         .catch(err => console.error("Error cargando categorías:", err));
@@ -54,8 +55,6 @@ document.addEventListener("DOMContentLoaded", () => {
     const filtroMusculo = document.getElementById("select-musculo-filtro");
     if(filtroMusculo){
         filtroMusculo.addEventListener("change", cargarEjercicios);
-        // Cargar inicial
-        cargarEjercicios();
     }
 
     // ==========================================

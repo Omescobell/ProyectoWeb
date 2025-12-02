@@ -173,15 +173,28 @@ app.get('/api/categorias', (req, res) => {
 
 
 // Obtener ejercicios
-app.get('/api/ejercicios/:id_categoria', (req, res) => {
-    // CAMBIO: Se selecciona 'id_ejercicio' tal como está en tu base de datos
-    const query = "SELECT id_ejercicio, nombre FROM ejercicios WHERE id_categoria = ?"; 
-    connection.query(query, [req.params.id_categoria], (err, results) => {
+app.get('/api/ejercicios', (req, res) => {
+    const categoriaId = req.query.categoria; 
+
+    let query = "";
+    let params = [];
+
+    if (!categoriaId || categoriaId === '0') {
+        // Obtener todos
+        query = "SELECT id_ejercicio, nombre FROM ejercicios";
+    } else {
+        //Se filtra por categoria
+        query = "SELECT id_ejercicio, nombre FROM ejercicios WHERE id_categoria = ?";
+        params = [categoriaId];
+    }
+
+    connection.query(query, params, (err, results) => {
         if (err) {
             console.error("Error SQL:", err);
-            return res.status(500).json({ success: false, message: "Error al obtener ejercicios" });
+            // Devolvemos array vacío en caso de error para no romper el front con JSON
+            return res.status(500).json([]); 
         }
-        res.json({ success: true, ejercicios: results }); 
+        res.json(results); 
     });
 });
 
