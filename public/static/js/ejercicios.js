@@ -1,248 +1,242 @@
-// --- VARIABLES GLOBALES ---
-let ejercicioSeleccionadoId = null; // Guarda el ID del ejercicio que el usuario está viendo actualmente
-const modalElement = document.getElementById('modalConfigEjercicio');
-// Asegúrate de que bootstrap esté cargado en tu HTML para que esto funcione
-const modalConfig = new bootstrap.Modal(modalElement); 
-
-// --- MAPEO DE CATEGORÍAS ---
-const MUSCLE_TO_CATEGORY_ID = {
-    'pecho': 1,
-    'espalda': 2,
-    'pierna': 3,   
-    'brazos': 4, 
-    'hombro': 5,   
-    'gluteos': 6,
-    'abdomen': 7
-};
-
-// --- ELEMENTOS DEL DOM ---
-const musculoSelector = document.getElementById('musculo-selector');
-const listaEjerciciosContainer = document.getElementById('lista-ejercicios-seleccion');
-const nombreEjercicioElement = document.getElementById('nombre-ejercicio');
-const descripcionEjercicioElement = document.getElementById('descripcion-ejercicio');
-const musculoPrincipalElement = document.getElementById('musculo-principal');
-const listaRutinasContainer = document.getElementById('lista-rutinas-para-agregar');
-const btnGuardarConfig = document.getElementById('btn-guardar-configuracion');
-
-// --- INICIALIZACIÓN ---
 document.addEventListener('DOMContentLoaded', () => {
+    console.log("DOM Cargado correctamente. Iniciando scripts...");
+    let ejercicioSeleccionadoId = null;
+
+    // Elementos del DOM
+    const musculoSelector = document.getElementById('musculo-selector');
+    const listaEjerciciosContainer = document.getElementById('lista-ejercicios-seleccion');
+    
+    // Elementos de detalle
+    const nombreEjercicioEl = document.getElementById('nombre-ejercicio');
+    const descripcionEjercicioEl = document.getElementById('descripcion-ejercicio');
+    const musculoPrincipalEl = document.getElementById('musculo-principal');
+    const btnAgregarRutinaMain = document.getElementById('btn-agregar-rutina');
+
+    // Elementos del Dropdown y Modal
+    const listaRutinasContainer = document.getElementById('lista-rutinas-para-agregar');
+    const btnGuardarConfig = document.getElementById('btn-guardar-configuracion');
+
+    // Mapeo de categorías
+    const MUSCLE_TO_CATEGORY_ID = {
+        'pecho': 1, 'espalda': 2, 'pierna': 3,   
+        'brazos': 4, 'hombro': 5, 'gluteos': 6, 'abdomen': 7
+    };
+
+    // Inicialización
     cargarMisRutinas();
-    // Opcional: Deshabilitar el botón de agregar hasta que se seleccione un ejercicio
-    document.getElementById('btn-agregar-rutina').classList.add('disabled');
-});
-
-// --- 1. OBTENER EJERCICIOS POR CATEGORÍA ---
-async function getEjerciciosPorCategoria(id_categoria) {
-    if (!id_categoria) {
-        listaEjerciciosContainer.innerHTML = '<p class="text-muted">Selecciona un músculo válido.</p>';
-        return;
-    }
-
-    try {
-        const response = await fetch(`/api/ejercicios/${id_categoria}`);
-        const data = await response.json();
-
-        if (data.success) {
-            renderEjerciciosList(data.ejercicios);
-        } else {
-            listaEjerciciosContainer.innerHTML = '<p>Error al cargar ejercicios.</p>';
-            console.error('Error:', data.message);
-        }
-    } catch (error) {
-        listaEjerciciosContainer.innerHTML = '<p>Error de conexión.</p>';
-        console.error('Error fetch:', error);
-    }
-}
-
-// --- 2. RENDERIZAR LISTA ---
-function renderEjerciciosList(ejercicios) {
-    listaEjerciciosContainer.innerHTML = ''; // Limpiar lista anterior
-
-    if (ejercicios.length === 0) {
-        listaEjerciciosContainer.innerHTML = '<p>No hay ejercicios para este músculo.</p>';
-        limpiarDetalles();
-        return;
-    }
-
-    // Cargar detalles del primer ejercicio por defecto
-    if (ejercicios.length > 0) {
-        getDetallesEjercicio(ejercicios[0].id_ejercicio);
-    }
-
-    ejercicios.forEach((ejercicio, index) => {
-        const opcionDiv = document.createElement('div');
-        opcionDiv.className = 'opcion';
-
-        const radioInput = document.createElement('input');
-        radioInput.type = 'radio';
-        radioInput.id = `ejercicio-${ejercicio.id_ejercicio}`;
-        radioInput.name = 'ejercicio';
-        radioInput.value = ejercicio.id_ejercicio; 
-        
-        if (index === 0) radioInput.checked = true;
-
-        const label = document.createElement('label');
-        label.htmlFor = `ejercicio-${ejercicio.id_ejercicio}`;
-        label.textContent = ejercicio.nombre;
-        label.style.cursor = "pointer";
-
-        opcionDiv.appendChild(radioInput);
-        opcionDiv.appendChild(label);
-        listaEjerciciosContainer.appendChild(opcionDiv);
-    });
-}
-
-// --- 3. OBTENER DETALLES (Y ACTUALIZAR VARIABLE GLOBAL) ---
-async function getDetallesEjercicio(id_ejercicio) {
-    if (!id_ejercicio) return;
-    
-    // ACTUALIZAMOS LA VARIABLE GLOBAL
-    ejercicioSeleccionadoId = id_ejercicio;
-
-    // Feedback visual
-    nombreEjercicioElement.textContent = "Cargando...";
-    
-    try {
-        const response = await fetch(`/api/ejercicios/detalle/${id_ejercicio}`); 
-        const data = await response.json();
-
-        if (data.success && data.ejercicio) {
-            const ej = data.ejercicio;
-            nombreEjercicioElement.textContent = ej.nombre;
-            descripcionEjercicioElement.textContent = ej.descripcion || 'Sin descripción disponible.';
-            musculoPrincipalElement.textContent = `Categoría: ${ej.nombre_categoria}`;
-            
-            // Habilitar el botón de agregar rutina ahora que hay un ejercicio seleccionado
-            document.getElementById('btn-agregar-rutina').classList.remove('disabled');
-        } else {
-            nombreEjercicioElement.textContent = 'Error';
-            descripcionEjercicioElement.textContent = 'No se pudo cargar la información.';
-        }
-    } catch (error) {
-        console.error('Error al obtener detalles:', error);
-    }
-}
-
-function limpiarDetalles() {
-    ejercicioSeleccionadoId = null;
-    nombreEjercicioElement.textContent = 'Selecciona un Ejercicio';
-    descripcionEjercicioElement.textContent = '';
-    musculoPrincipalElement.textContent = '';
-    document.getElementById('btn-agregar-rutina').classList.add('disabled');
-}
-
-// --- 4. CARGAR RUTINAS EN EL DROPDOWN ---
-async function cargarMisRutinas() {
-    try {
-        const response = await fetch('/api/mis-rutinas');
-        const data = await response.json();
-
-        listaRutinasContainer.innerHTML = ''; 
-
-        if (data.success && data.rutinas.length > 0) {
-            data.rutinas.forEach(rutina => {
-                const li = document.createElement('li');
-                const a = document.createElement('a');
-                a.className = 'dropdown-item';
-                a.href = '#';
-                a.textContent = rutina.nombre;
-                
-                // EVENTO: Al hacer clic en una rutina, ABRIR EL MODAL
-                a.addEventListener('click', (e) => {
-                    e.preventDefault();
-                    if (!ejercicioSeleccionadoId) {
-                        alert("Por favor selecciona un ejercicio primero.");
-                        return;
-                    }
-                    abrirModalConfiguracion(rutina.id_rutina);
-                });
-
-                li.appendChild(a);
-                listaRutinasContainer.appendChild(li);
-            });
-            
-            // Separador y botón de nueva rutina
-            listaRutinasContainer.innerHTML += '<li><hr class="dropdown-divider"></li>';
-            listaRutinasContainer.innerHTML += '<li><a class="dropdown-item" href="/nueva_rutina"><b>+ Crear nueva rutina</b></a></li>';
-        } else {
-            listaRutinasContainer.innerHTML = '<li><a class="dropdown-item disabled" href="#">Sin rutinas creadas</a></li>';
-            listaRutinasContainer.innerHTML += '<li><a class="dropdown-item" href="/nueva_rutina"><b>+ Crear nueva rutina</b></a></li>';
-        }
-    } catch (error) {
-        console.error('Error cargando rutinas:', error);
-        listaRutinasContainer.innerHTML = '<li><a class="dropdown-item disabled" href="#">Error de conexión</a></li>';
-    }
-}
-
-// --- 5. LÓGICA DEL MODAL ---
-
-function abrirModalConfiguracion(idRutina) {
-    // Guardar el ID de la rutina en el campo oculto del modal
-    document.getElementById('hiddenRutinaId').value = idRutina;
-    
-    // Limpiar inputs anteriores para una experiencia limpia
-    document.getElementById('inputSeries').value = '';
-    document.getElementById('inputReps').value = '';
-    document.getElementById('inputDescanso').value = '60'; // Valor por defecto
-
-    // Mostrar el modal usando Bootstrap
-    modalConfig.show();
-}
-
-// Evento click en el botón "Guardar en Rutina" del Modal
-btnGuardarConfig.addEventListener('click', async () => {
-    // Obtener datos del formulario del modal
-    const idRutina = document.getElementById('hiddenRutinaId').value;
-    const series = document.getElementById('inputSeries').value;
-    const reps = document.getElementById('inputReps').value;
-    const descanso = document.getElementById('inputDescanso').value;
-
-    // Validación simple
-    if (!series || !reps) {
-        alert("Las series y repeticiones son obligatorias.");
-        return;
-    }
-
-    try {
-        // CAMBIO AQUÍ: La ruta debe coincidir con la del servidor
-        const response = await fetch('/api/rutinas/agregar-detalle', {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json'
-            },
-            body: JSON.stringify({
-                id_rutina: idRutina,
-                id_ejercicio: ejercicioSeleccionadoId, 
-                series: series,
-                repeticiones: reps,
-                descanso: descanso
-            })
+    if(btnAgregarRutinaMain) btnAgregarRutinaMain.classList.add('disabled');
+    if (musculoSelector) {
+        musculoSelector.addEventListener('change', (e) => {
+            const catId = MUSCLE_TO_CATEGORY_ID[e.target.value];
+            if (catId) getEjerciciosPorCategoria(catId);
         });
+    }
 
-        const data = await response.json();
+ 
+    if (listaEjerciciosContainer) {
+        listaEjerciciosContainer.addEventListener('change', (e) => {
+            if (e.target.name === 'ejercicio') {
+                getDetallesEjercicio(e.target.value);
+            }
+        });
+    }
 
-        if (data.success) {
-            alert(`¡Ejercicio agregado a la rutina correctamente!`);
-            modalConfig.hide(); // Cerrar el modal
-        } else {
-            alert('Error al guardar: ' + data.message);
+
+    if (listaRutinasContainer) {
+        listaRutinasContainer.addEventListener('click', (e) => {
+            const itemRutina = e.target.closest('.rutina-item-action');
+
+            if (itemRutina) {
+                e.preventDefault();
+                
+                const idRutina = itemRutina.dataset.id;
+                const nombreRutina = itemRutina.dataset.nombre;
+
+                console.log(`Clic en rutina: ${nombreRutina} (ID: ${idRutina})`);
+
+                if (!ejercicioSeleccionadoId) {
+                    alert("⚠️ Por favor selecciona un ejercicio primero de la lista izquierda.");
+                    return;
+                }
+
+
+                abrirModalConfiguracion(idRutina);
+            }
+        });
+    }
+
+    if (btnGuardarConfig) {
+        btnGuardarConfig.addEventListener('click', guardarEjercicioEnRutina);
+    }
+
+
+    // --- Cargar Rutinas en el Dropdown ---
+    async function cargarMisRutinas() {
+        if (!listaRutinasContainer) return;
+        
+        try {
+            const response = await fetch('/api/mis-rutinas');
+            const data = await response.json();
+
+            listaRutinasContainer.innerHTML = ''; // Limpiar
+
+            if (data.success && data.rutinas.length > 0) {
+                data.rutinas.forEach(rutina => {
+                    const li = document.createElement('li');
+                    li.innerHTML = `
+                        <a class="dropdown-item rutina-item-action" href="#" 
+                            data-id="${rutina.id_rutina}" 
+                            data-nombre="${rutina.nombre}">
+                            ${rutina.nombre}
+                        </a>`;
+                    listaRutinasContainer.appendChild(li);
+                });
+            } else {
+                listaRutinasContainer.innerHTML = '<li><span class="dropdown-item disabled">Sin rutinas creadas</span></li>';
+            }
+
+            // Enlaces fijos
+            listaRutinasContainer.innerHTML += '<li><hr class="dropdown-divider"></li>';
+            listaRutinasContainer.innerHTML += '<li><a class="dropdown-item fw-bold" href="/nueva_rutina">+ Crear nueva rutina</a></li>';
+
+        } catch (error) {
+            console.error("Error cargando rutinas:", error);
+            listaRutinasContainer.innerHTML = '<li><span class="dropdown-item disabled text-danger">Error de conexión</span></li>';
         }
-    } catch (error) {
-        console.error(error);
-        alert('Error de conexión al guardar ejercicio.');
     }
-});
 
-// --- EVENT LISTENERS PRINCIPALES ---
-musculoSelector.addEventListener('change', (event) => {
-    const selectedMuscle = event.target.value;
-    const categoryId = MUSCLE_TO_CATEGORY_ID[selectedMuscle];
-    getEjerciciosPorCategoria(categoryId);
-});
+    // --- Cargar Lista de Ejercicios ---
+    async function getEjerciciosPorCategoria(id_categoria) {
+        listaEjerciciosContainer.innerHTML = '<p class="text-center mt-2">Cargando...</p>';
+        try {
+            const response = await fetch(`/api/ejercicios?categoria=${id_categoria}`);
+            const data = await response.json();
 
-listaEjerciciosContainer.addEventListener('change', (event) => {
-    if (event.target.name === 'ejercicio') {
-        const id_ejercicio = event.target.value;
-        getDetallesEjercicio(id_ejercicio);
+            listaEjerciciosContainer.innerHTML = ''; // Limpiar
+
+            if (Array.isArray(data) && data.length > 0) {
+                // Seleccionar el primero automáticamente
+                getDetallesEjercicio(data[0].id_ejercicio);
+
+                data.forEach((ejercicio, index) => {
+                    const div = document.createElement('div');
+                    div.className = 'opcion p-2 border-bottom';
+                    
+                    const isChecked = index === 0 ? 'checked' : '';
+                    
+                    div.innerHTML = `
+                        <input type="radio" id="ej-${ejercicio.id_ejercicio}" name="ejercicio" value="${ejercicio.id_ejercicio}" ${isChecked} style="cursor:pointer;">
+                        <label for="ej-${ejercicio.id_ejercicio}" style="cursor:pointer; margin-left:8px;">${ejercicio.nombre}</label>
+                    `;
+                    listaEjerciciosContainer.appendChild(div);
+                });
+            } else {
+                listaEjerciciosContainer.innerHTML = '<p class="text-center text-muted">No hay ejercicios en esta categoría.</p>';
+                limpiarDetalles();
+            }
+        } catch (error) {
+            console.error(error);
+            listaEjerciciosContainer.innerHTML = '<p class="text-danger">Error al cargar ejercicios.</p>';
+        }
     }
+
+    // --- Obtener Detalles ---
+    async function getDetallesEjercicio(id) {
+        ejercicioSeleccionadoId = id;
+        nombreEjercicioEl.textContent = "Cargando...";
+
+        try {
+            const response = await fetch(`/api/ejercicios/detalle/${id}`);
+            const data = await response.json();
+
+            if (data.success && data.ejercicio) {
+                const ej = data.ejercicio;
+                nombreEjercicioEl.textContent = ej.nombre;
+                descripcionEjercicioEl.textContent = ej.descripcion || "Sin descripción disponible.";
+                musculoPrincipalEl.textContent = `Categoría: ${ej.nombre_categoria}`;
+                
+                // Habilitar botón dropdown
+                if(btnAgregarRutinaMain) btnAgregarRutinaMain.classList.remove('disabled');
+            }
+        } catch (error) {
+            console.error("Error detalles:", error);
+        }
+    }
+
+    function limpiarDetalles() {
+        ejercicioSeleccionadoId = null;
+        nombreEjercicioEl.textContent = "Selecciona un Ejercicio";
+        descripcionEjercicioEl.textContent = "";
+        musculoPrincipalEl.textContent = "";
+        if(btnAgregarRutinaMain) btnAgregarRutinaMain.classList.add('disabled');
+    }
+
+    // --- ABRIR MODAL---
+    function abrirModalConfiguracion(idRutina) {
+        const modalEl = document.getElementById('modalConfigEjercicio');
+        const hiddenInput = document.getElementById('hiddenRutinaId');
+        
+        if (!modalEl || !hiddenInput) {
+            console.error("Error crítico: Falta el modal o el input oculto en el HTML.");
+            return;
+        }
+
+        hiddenInput.value = idRutina;
+        document.getElementById('inputSeries').value = '';
+        document.getElementById('inputReps').value = '';
+
+        try {
+            const modalInstance = bootstrap.Modal.getOrCreateInstance(modalEl);
+            modalInstance.show();
+        } catch (err) {
+            console.error("Error Bootstrap:", err);
+            alert("Error al abrir ventana. Verifica que Bootstrap JS esté cargado.");
+        }
+    }
+
+    // --- GUARDAR DATOS (POST) ---
+    async function guardarEjercicioEnRutina() {
+        const idRutina = document.getElementById('hiddenRutinaId').value;
+        const series = document.getElementById('inputSeries').value;
+        const reps = document.getElementById('inputReps').value;
+        const descanso = document.getElementById('inputDescanso').value;
+
+        if (!series || !reps) {
+            alert("⚠️ Debes completar Series y Repeticiones.");
+            return;
+        }
+
+        const payload = {
+            id_rutina: idRutina,
+            id_ejercicio: ejercicioSeleccionadoId,
+            series: series,
+            repeticiones: reps,
+            descanso: descanso || 60
+        };
+
+        try {
+            const response = await fetch('/api/rutinas/agregar-detalle', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify(payload)
+            });
+
+            const data = await response.json();
+
+            if (data.success) {
+                alert("✅ ¡Ejercicio agregado correctamente!");
+                
+                const modalEl = document.getElementById('modalConfigEjercicio');
+                const modalInstance = bootstrap.Modal.getInstance(modalEl);
+                if(modalInstance) modalInstance.hide();
+
+            } else {
+                alert("❌ Error: " + data.message);
+            }
+        } catch (error) {
+            console.error("Error al guardar:", error);
+            alert("Error de conexión con el servidor.");
+        }
+    }
+
 });
